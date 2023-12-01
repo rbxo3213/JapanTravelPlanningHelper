@@ -47,7 +47,7 @@ def convert_price(price):
 def display_flight_details(flight_data):
     new_window = tk.Toplevel(root)
     new_window.title("항공편 세부 정보")
-    new_window.geometry("900x600")  # 창 크기 조정
+    new_window.geometry("800x600")  # 창 크기 조정
 
     # Scrollable canvas and frame
     canvas = tk.Canvas(new_window)
