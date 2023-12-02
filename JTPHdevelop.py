@@ -15,6 +15,13 @@ with open('API_key.json', 'r') as file:
 # Initialize Amadeus client
 amadeus = Client(client_id=API_KEY, client_secret=API_SECRET)
 
+# 도시 이름과 IATA 코드를 매핑한 딕셔너리
+city_iata_codes = {
+    'Tokyo(NRT)': 'TYO',  # 실제 IATA 도시 코드로 교체 필요
+    'Osaka': 'OSA',
+    # 필요한 도시의 IATA 코드를 여기에 추가
+}
+
 # Separate the airports by country
 airports_korea = {
     'ICN': 'Seoul(ICN)', 'GMP': 'Seoul(GMP)', 'PUS': 'Busan', 'CJU': 'Jeju',
@@ -28,13 +35,22 @@ airports_japan = {
     'NGS': 'Nagasaki', 'TOY': 'Toyama'
 }
 
-# 도시명을 IATA 코드로 변환하는 함수
-def get_city_iata_code(city_name):
-    # 일본 공항 딕셔너리에서 도시명에 해당하는 IATA 코드를 찾습니다.
-    for code, name in airports_japan.items():
-        if city_name in name:
-            return code  # IATA 코드를 반환합니다.
-    return None  # 일치하는 도시명이 없는 경우 None을 반환합니다.
+# Function to convert flight duration from ISO format (PT2H25M) to human-readable format (2h 25m)
+def convert_duration(duration):
+    try:
+        hours = int(duration[2:duration.find('H')])
+        minutes = int(duration[duration.find('H')+1:duration.find('M')])
+        return f"{hours}h {minutes}m"
+    except ValueError:
+        return duration  # Return original if conversion is not possible
+
+# Function to convert price from EUR to KRW
+def convert_price(price):
+    # Dummy conversion rate, you should use real-time rates or another method
+    conversion_rate = 1350
+    return int(float(price) * conversion_rate)
+
+
 
 # Function to convert flight duration from ISO format (PT2H25M) to human-readable format (2h 25m)
 def convert_duration(duration):
@@ -118,42 +134,67 @@ def search_flights():
     except ResponseError as error:
         messagebox.showerror("Error", f"An error occurred: {error}")
 
-# 호텔 검색 기능
+# Function to find the IATA code for the selected city
+def find_iata_code(city_name, airports):
+    for code, full_name in airports.items():
+        if city_name in full_name:
+            return code
+    return None
+
+# 호텔 검색 및 예약 기능
 def search_and_book_hotel():
-    destination_city = destination_var.get().split(' ')[0]  # "Tokyo(HND)"에서 "Tokyo" 추출
+    city_name = destination_var.get().split('(')[0].strip()  # 도시 이름 추출
+    iata_code = city_iata_codes.get(city_name)  # 도시 이름으로 IATA 코드 조회
+
+    if not iata_code:
+        messagebox.showerror("Error", f"선택한 도시의 IATA 코드를 찾을 수 없습니다: {city_name}")
+        return
+
     departure_date = departure_calendar.get_date()
     return_date = return_calendar.get_date()
 
+    # 날짜 형식이 '23. 12. 5.'와 같이 제공되므로 아래 형식에 맞게 조정
+    formatted_departure_date = datetime.strptime(departure_date, '%y. %m. %d.').strftime('%Y-%m-%d')
+    formatted_return_date = datetime.strptime(return_date, '%y. %m. %d.').strftime('%Y-%m-%d')
+
     try:
         # 호텔 검색 API 호출
-        hotel_offers_response = amadeus.shopping.hotel_offers_search.get(
-            cityCode=destination_city,
-            checkInDate=departure_date,
-            checkOutDate=return_date
+        response = amadeus.shopping.hotel_offers_search.get(
+            cityCode=iata_code,  # 도시 IATA 코드 사용
+            checkInDate=formatted_departure_date,
+            checkOutDate=formatted_return_date
         )
-
-        if hotel_offers_response.status_code == 200:
-            hotels_data = hotel_offers_response.data
+        if response.status_code == 200:
+            hotels_data = response.data
             display_hotels(hotels_data)
         else:
-            messagebox.showerror("Error", f"API call failed with status code {hotel_offers_response.status_code}")
+            messagebox.showerror("Error", f"API 호출 실패, 상태 코드: {response.status_code}")
     except ResponseError as error:
-        messagebox.showerror("Error", f"An error occurred: {error}")
+        messagebox.showerror("Error", f"오류 발생: {str(error)}")
 
-# 호텔 목록을 표시하는 새 창
+
+
+# 호텔을 새 창에 표시하는 기능
 def display_hotels(hotels_data):
     hotels_window = tk.Toplevel(root)
     hotels_window.title("Available Hotels")
-    hotels_window.geometry("900x600")  # 새 창의 크기 설정
-
-    # 숙소 데이터를 표시하는 스크롤 가능한 리스트
-    hotels_listbox = tk.Listbox(hotels_window)
+    hotels_window.geometry("900x600")  # Set the window size
+    
+    # Create a scrollable listbox to display hotels
+    scrollbar = ttk.Scrollbar(hotels_window)
+    scrollbar.pack(side='right', fill='y')
+    
+    hotels_listbox = tk.Listbox(hotels_window, yscrollcommand=scrollbar.set)
     for hotel in hotels_data:
-        hotel_name = hotel.get("hotel", {}).get("name", "Unknown Hotel")
-        hotel_price = hotel.get("offers", [{}])[0].get("price", {}).get("total", "0")
+        hotel_name = hotel['hotel']['name']
+        hotel_price = hotel['offers'][0]['price']['total']
         hotels_listbox.insert(tk.END, f"{hotel_name} - Price: {hotel_price}")
+    
+    hotels_listbox.pack(side='left', fill='both', expand=True)
+    scrollbar.config(command=hotels_listbox.yview)
 
-    hotels_listbox.pack(side="left", fill="both", expand=True)
+# Initialize the main GUI window
+# ... (rest of the code remains unchanged)
 
 # Initialize the main GUI window
 root = tk.Tk()
@@ -162,6 +203,7 @@ root.title("Search")
 # amadeus 객체에서 사용 가능한 메소드 목록을 확인
 # print(dir(amadeus.shopping))
 
+print(dir(amadeus.shopping))
 
 # Define variables for the GUI
 origin_var = tk.StringVar(value='Seoul(ICN)')  # Default value
@@ -189,9 +231,9 @@ tk.Label(root, text="Return Date:").grid(row=3, column=0, sticky='e')
 search_button = tk.Button(root, text="Search Flights", command=search_flights)
 search_button.grid(row=4, column=0, columnspan=2, padx=5, pady=5)
 
-# 호텔 검색 및 예약 버튼
-search_and_book_button = tk.Button(root, text="Search and Book Hotel", command=search_and_book_hotel)
-search_and_book_button.grid(row=5, column=0, columnspan=2, padx=5, pady=5)
+# 호텔 검색 버튼 추가
+hotel_search_button = tk.Button(root, text="Search Hotels", command=search_and_book_hotel)
+hotel_search_button.grid(row=5, column=0, columnspan=2, padx=5, pady=5)
 
-# Start the GUI
+# Start the main loop
 root.mainloop()
