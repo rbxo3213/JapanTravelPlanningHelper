@@ -43,6 +43,12 @@ def convert_price(price):
     conversion_rate = 1350
     return int(float(price) * conversion_rate)
 
+# Function to convert specific IATA codes to 'TYO'
+def convert_iata_code(iata_code):
+    if iata_code in ['HND', 'NRT']:
+        return 'TYO'
+    return iata_code
+
 # 항공편 세부 정보 창의 스크롤 기능 활성화
 def display_flight_details(flight_data):
     new_window = tk.Toplevel(root)

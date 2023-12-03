@@ -1,0 +1,74 @@
+{
+  "TYO": {
+    "Shibuya": { "lat": 35.662, "lon": 139.7038 },
+    "Shinjuku": { "lat": 35.6938, "lon": 139.7036 },
+    "Ginza": { "lat": 35.6716, "lon": 139.7653 },
+    "Asakusa": { "lat": 35.7148, "lon": 139.7967 },
+    "Akihabara": { "lat": 35.7023, "lon": 139.7745 },
+    "Roppongi": { "lat": 35.6627, "lon": 139.731 },
+    "Harajuku": { "lat": 35.6693, "lon": 139.7026 },
+    "Odaiba": { "lat": 35.6256, "lon": 139.7752 },
+    "Tsukiji": { "lat": 35.6655, "lon": 139.7704 },
+    "Marunouchi": { "lat": 35.6804, "lon": 139.7636 }
+  },
+  "OSA": {
+    "Dotonbori": { "lat": 34.6687, "lon": 135.5013 },
+    "Umeda": { "lat": 34.7025, "lon": 135.4959 },
+    "Namba": { "lat": 34.6665, "lon": 135.5013 },
+    "Shinsaibashi": { "lat": 34.6723, "lon": 135.5 },
+    "Tennoji": { "lat": 34.6555, "lon": 135.5181 },
+    "Osaka Castle": { "lat": 34.6873, "lon": 135.5262 },
+    "Universal Studios Japan": { "lat": 34.6654, "lon": 135.4323 },
+    "Osaka Bay Area": { "lat": 34.6545, "lon": 135.4288 },
+    "Shin-Osaka": { "lat": 34.7335, "lon": 135.5001 },
+    "Kyobashi": { "lat": 34.6966, "lon": 135.5345 }
+  },
+  "KKJ": {
+    "Kokura": { "lat": 33.8841, "lon": 130.8808 },
+    "Mojiko": { "lat": 33.9456, "lon": 130.9594 }
+  },
+  "TAK": {
+    "Ritsurin Garden": { "lat": 34.3428, "lon": 134.0466 },
+    "Kawaramachi": { "lat": 34.35, "lon": 134.0433 }
+  },
+  "KMJ": {
+    "Kumamoto Castle": { "lat": 32.8062, "lon": 130.7069 },
+    "Suizenji": { "lat": 32.8031, "lon": 130.7079 }
+  },
+  "MYJ": {
+    "Dogo Onsen": { "lat": 33.8528, "lon": 132.7854 },
+    "Matsuyama Castle": { "lat": 33.8392, "lon": 132.7657 }
+  },
+  "OKA": {
+    "Shurijo Castle": { "lat": 26.2172, "lon": 127.7193 },
+    "Kokusai Street": { "lat": 26.2144, "lon": 127.6794 }
+  },
+  "SDJ": {
+    "Sendai Station": { "lat": 38.2601, "lon": 140.8824 },
+    "Aoba Castle": { "lat": 38.2682, "lon": 140.8694 }
+  },
+  "NGS": {
+    "Inasayama": { "lat": 32.7447, "lon": 129.8736 },
+    "Nagasaki Peace Park": { "lat": 32.7748, "lon": 129.8683 }
+  },
+  "TOY": {
+    "Toyama Castle": { "lat": 36.6953, "lon": 137.2119 },
+    "Kansui Park": { "lat": 36.7012, "lon": 137.2137 }
+  },
+  "HIJ": {
+    "Hiroshima Peace Memorial": { "lat": 34.3916, "lon": 132.4512 },
+    "Shukkeien Garden": { "lat": 34.3955, "lon": 132.4596 }
+  },
+  "HSG": {
+    "Saga Castle": { "lat": 33.255, "lon": 130.3009 },
+    "Yoshinogari Park": { "lat": 33.3213, "lon": 130.3742 }
+  },
+  "FSZ": {
+    "S-Pulse Dream Plaza": { "lat": 34.975, "lon": 138.3831 },
+    "Sunpu Castle": { "lat": 34.9779, "lon": 138.3836 }
+  },
+  "CTS": {
+    "Odori Park": { "lat": 43.0595, "lon": 141.3544 },
+    "Moerenuma Park": { "lat": 43.0962, "lon": 141.4314 }
+  }
+}
