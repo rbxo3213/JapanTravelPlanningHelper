@@ -31,10 +31,6 @@ with open('regions.json', 'r') as file:
     regions_data = json.load(file)
     regions = regions_data
 
-with open('pois.json', 'r') as file:
-    pois_data = json.load(file)
-    pois = pois_data
-
 # Initialize Amadeus client
 amadeus = Client(client_id=API_KEY, client_secret=API_SECRET)
 #product = Client(client_id=PRODUCT_KEY, client_secret=PRODUCT_SECRET)
@@ -69,34 +65,12 @@ def convert_duration(duration):
 def on_mousewheel(event, canvas):
     canvas.yview_scroll(int(-1*(event.delta/120)), "units")
 
-def wrap_text(text, length):
-    if len(text) > length:
-        return text[:length] + '\n' + text[length:]
-    else:
-        return text
+def display_flight_details(flight_data, flight_frame):
+    for widget in flight_frame.winfo_children():
+        widget.destroy()
     
-
-# Display flight details in a new window
-def display_flight_details(flight_data):
-    new_window = tk.Toplevel(root)
-    new_window.title("Flight Details")
-    new_window.geometry("960x280+700+10")
-
-    canvas = tk.Canvas(new_window)
-    scrollbar = ttk.Scrollbar(new_window, orient="vertical", command=canvas.yview)
-    scrollable_frame = ttk.Frame(canvas)
-
-    canvas.configure(yscrollcommand=scrollbar.set)
-    canvas.bind('<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-    canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-
-    # Add the scrollbar to the canvas
-    scrollbar.pack(side="right", fill="y")
-    # Bind the mousewheel scrolling to the scrollbar
-    new_window.bind("<MouseWheel>", lambda e: on_mousewheel(e, canvas))
-
     for offer in flight_data:
-        round_trip_frame = ttk.Frame(scrollable_frame, padding=10, borderwidth=2, relief="groove")
+        round_trip_frame = ttk.Frame(flight_frame, padding=10, borderwidth=2, relief="groove")
         round_trip_frame.pack(fill='x', expand=True, pady=10)
         for i, itinerary in enumerate(offer['itineraries']):
             flight_info = f"Flight {i+1} - Departure: {itinerary['segments'][0]['departure']['iataCode']} {itinerary['segments'][0]['departure']['at']}, " \
@@ -110,8 +84,11 @@ def display_flight_details(flight_data):
         price_label = tk.Label(round_trip_frame, text=price_info, bg="#d0e0d0", fg="black", font=('Gothic', 14, 'bold'))
         price_label.pack(fill='x', expand=True, pady=5)
 
-    canvas.pack(side="left", fill="both", expand=True)
-    scrollbar.pack(side="right", fill="y")
+    flight_frame.update_idletasks()
+
+# 이 함수를 호출할 때는 'flights' 카테고리에 해당하는 scrollable_frame을 전달합니다.
+# 예: display_flight_details(response_data, scrollable_frames['flights'])
+
 
 # Search flights function
 def search_flights():
@@ -131,7 +108,7 @@ def search_flights():
             returnDate=return_date,
             adults=adults_var.get()
         )
-        display_flight_details(response.data)
+        display_flight_details(response.data, scrollable_frames['flights'])
     except ResponseError as error:
         messagebox.showerror("Error", f"An error occurred: {error}")
 
@@ -154,61 +131,30 @@ def fetch_hotel_list():
             adults=adults_var.get()
         )
         hotels = hotel_offers_response.data
-        display_hotels(hotels, destination_code)
+        display_hotels(hotels, scrollable_frames['hotels'])
     except ResponseError as error:
         messagebox.showerror("Error", "Failed to fetch hotels: " + str(error))
 
-def display_hotels(hotels, iata_code):
-    new_window = tk.Toplevel(root)
-    new_window.title("Hotels List")
-    new_window.geometry("530x340+700+325")
-
-    # Main frame for list of hotels
-    hotels_frame = ttk.Frame(new_window)
-    hotels_frame.pack(fill=tk.BOTH, expand=True)
-
-    # Scrollable list for hotels
-    hotels_canvas = tk.Canvas(hotels_frame)
-    hotels_scrollbar = ttk.Scrollbar(hotels_frame, orient="vertical", command=hotels_canvas.yview)
-    hotels_scrollable_frame = ttk.Frame(hotels_canvas)
-
-    hotels_canvas.configure(yscrollcommand=hotels_scrollbar.set)
-    hotels_canvas.bind('<Configure>', lambda e: hotels_canvas.configure(scrollregion=hotels_canvas.bbox("all")))
-    hotels_canvas_window = hotels_canvas.create_window((0, 0), window=hotels_scrollable_frame, anchor="nw")
+def display_hotels(hotels, hotel_frame):
+    # Clear the frame
+    for widget in hotel_frame.winfo_children():
+        widget.destroy()
 
     for hotel in hotels:
         # 호텔 가격을 엔화에서 원화로 변환합니다.
         price_krw = convert_price_from_jpy_to_krw(hotel['offers'][0]['price']['total'])
 
-        hotel_frame = ttk.Frame(hotels_scrollable_frame, padding=10, borderwidth=2, relief="groove")
-        hotel_frame.pack(fill='x', expand=True, pady=5)
+        hotel_frame_individual = ttk.Frame(hotel_frame, padding=10, borderwidth=2, relief="groove")
+        hotel_frame_individual.pack(fill='x', expand=True, pady=5)
         
-        hotel_name_label = ttk.Label(hotel_frame, text=hotel['hotel']['name'], font=('Gothic', 12, 'bold'))
+        hotel_name_label = ttk.Label(hotel_frame_individual, text=hotel['hotel']['name'], font=('Gothic', 12, 'bold'))
         hotel_name_label.pack(side='left', fill='x', expand=True)
         
-        hotel_price_label = ttk.Label(hotel_frame, text=f"Price: {price_krw} KRW", font=('Gothic', 12))
+        hotel_price_label = ttk.Label(hotel_frame_individual, text=f"Price: {price_krw} KRW", font=('Gothic', 12))
         hotel_price_label.pack(side='left', fill='x', expand=True)
 
-    hotels_scrollbar.pack(side='right', fill='y')
-    hotels_canvas.pack(side='left', fill='both', expand=True)
+    hotel_frame.update_idletasks()
 
-    region_buttons_frame = ttk.Frame(new_window)
-    region_buttons_frame.pack(fill=tk.X, expand=False)
-
-    # Calculate number of rows needed for buttons (5 buttons per row)
-    num_buttons = len(regions[iata_code].keys())
-    rows_needed = (num_buttons // 5) + (num_buttons % 5 > 0)
-    buttons_per_row = 5
-
-    # Create buttons in a grid with max 5 buttons per row
-    for i, (region_name, coords) in enumerate(regions[iata_code].items()):
-        row = i // buttons_per_row
-        column = i % buttons_per_row
-        region_button = ttk.Button(region_buttons_frame, text=region_name, command=lambda rn=region_name: sort_hotels(hotels, rn, hotels_scrollable_frame, hotels_canvas, hotels_canvas_window))
-        region_button.grid(row=row, column=column, padx=5, pady=5)
-
-    # Bind the scroll event to the canvas
-    new_window.bind("<MouseWheel>", lambda e: hotels_canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
 
 # Sort hotels function
 def sort_hotels(hotels, region_name, hotels_scrollable_frame, hotels_canvas, hotels_canvas_window):
@@ -259,52 +205,49 @@ def sort_hotels(hotels, region_name, hotels_scrollable_frame, hotels_canvas, hot
     # Update the scroll region of the canvas
     hotels_canvas.configure(scrollregion=hotels_canvas.bbox("all"))
 
-def fetch_pois(destination_city):
-    # Extract the IATA code from the city name (assuming the format "City(IATA)")
-    destination_code = destination_city[destination_city.find("(")+1:destination_city.find(")")]
-    iata_code = convert_iata_code(destination_code)
+def fetch_pois():
+    destination_iata_code = convert_iata_code(next((code for code, city in airports_japan.items() if city == destination_var.get()), None))
 
-    pois_for_destination = pois.get(iata_code, [])
-    display_pois(pois_for_destination, iata_code)
+    with open('regions.json', 'r') as file:
+        regions_data = json.load(file)
 
+    if destination_iata_code in regions_data:
+        region_coords = regions_data[destination_iata_code]
 
-def display_pois(pois_data, iata_code):
-    new_window = tk.Toplevel(root)
-    new_window.title(f"Points of Interest in {iata_code}")
-    new_window.geometry("440x330+1240+325")
+        for region_name, coords in region_coords.items():
+            try:
+                response = amadeus.reference_data.locations.points_of_interest.get(
+                    latitude=41.397158,
+                    longitude=2.160873,
+                    radius=2
+                )
+                display_pois(response.data, scrollable_frames['pois'])
+                break
+            except ResponseError as error:
+                error_code = error.response.status_code
+                error_description = error.response.result
+                #messagebox.showerror(
+                #    "Error",
+                #    f"Failed to fetch POIs for {region_name}: {error_code} - {error_description}"
+                #) amadeus api test key에서 일본 지역은 사용할 수 없다고 해서 주석처리 함.
 
-    pois_canvas = tk.Canvas(new_window)
-    pois_scrollbar = ttk.Scrollbar(new_window, orient="vertical", command=pois_canvas.yview)
-    pois_scrollable_frame = ttk.Frame(pois_canvas)
-
-    pois_canvas.configure(yscrollcommand=pois_scrollbar.set)
-    pois_canvas.bind('<Configure>', lambda e: pois_canvas.configure(scrollregion=pois_canvas.bbox("all")))
-    pois_canvas.create_window((0, 0), window=pois_scrollable_frame, anchor="nw")
-
-    pois_scrollbar.pack(side="right", fill="y")
-    pois_canvas.pack(side="left", fill="both", expand=True)
-
-    new_window.bind("<MouseWheel>", lambda e: on_mousewheel(e, pois_canvas))
+def display_pois(pois_data, poi_frame):
+    for widget in poi_frame.winfo_children():
+        widget.destroy()
 
     for poi in pois_data:
-        poi_frame = ttk.Frame(pois_scrollable_frame, padding=10)
-        poi_frame.pack(fill='x', expand=True)
+        poi_frame_individual = ttk.Frame(poi_frame, padding=10)
+        poi_frame_individual.pack(fill='x', expand=True)
 
-        poi_name_label = ttk.Label(poi_frame, text=poi['Name'], font=('Gothic', 12, 'bold'))
-        poi_name_label.pack(side='top', fill='x', expand=True)
+        poi_name_label = ttk.Label(poi_frame_individual, text=poi['name'], font=('Gothic', 12, 'bold'))
+        poi_name_label.pack(side='left', fill='x', expand=True)
 
-        poi_category_label = ttk.Label(poi_frame, text=f"Category: {poi['Category']}", font=('Gothic', 12))
-        poi_category_label.pack(side='top', fill='x', expand=True)
+        poi_category_label = ttk.Label(poi_frame_individual, text=f"Category: {poi['category']}", font=('Gothic', 12))
+        poi_category_label.pack(side='left', fill='x', expand=True)
 
-        poi_location_label = ttk.Label(poi_frame, text=f"Location: {poi['Location']}", font=('Gothic', 12))
-        poi_location_label.pack(side='top', fill='x', expand=True)
+    poi_frame.update_idletasks()
 
-        # Wrap the text for descriptions longer than 35 characters
-        wrapped_description = wrap_text(poi['Description'], 35)
-        poi_description_label = ttk.Label(poi_frame, text=f"Description: {wrapped_description}", font=('Gothic', 12))
-        poi_description_label.pack(side='top', fill='x', expand=True)
-
-def display_transport_info(destination_code):
+def display_transport_info(destination_code, transport_frame):
     destination_city = destination_var.get()
     destination_code = convert_iata_code(next((code for code, city in airports_japan.items() if city == destination_city), None))
     iata_code = convert_iata_code(destination_code)
@@ -314,60 +257,40 @@ def display_transport_info(destination_code):
     
     if transport_info:
         # Display transport information in a new window
-        display_transport_details(transport_info)
+        display_transport_details(transport_info, scrollable_frames['transport'])
     else:
         messagebox.showwarning("Not Found", "No transport information found for the selected destination.")
 
-def display_transport_details(transport_info):
-    # Create a new window to display transport details
-    transport_window = tk.Toplevel(root)
-    transport_window.title("Transport Information")
-    transport_window.geometry("+700+710")
-    
-    # Grid configuration for uniform button sizes
-    for idx in range(1, 5):
-        transport_window.grid_columnconfigure(idx, weight=1, uniform="btn_col")
+def display_transport_details(transport_info, transport_frame):
+    for widget in transport_frame.winfo_children():
+        widget.destroy()
 
-    # Create a frame to hold the information
-    info_frame = ttk.Frame(transport_window, padding="10")
-    info_frame.pack(fill="both", expand=True)
-
-    tk.Label(info_frame, text="Pass Name:", font=('Gothic', 12, 'bold')).grid(row=0, column=0, sticky="ew")
-    tk.Label(info_frame, text="Coverage:", font=('Gothic', 12)).grid(row=1, column=0, sticky="ew")
-    tk.Label(info_frame, text="Duration Options:", font=('Gothic', 12)).grid(row=2, column=0, sticky="ew")
-    tk.Label(info_frame, text="Notes:", font=('Gothic', 12)).grid(row=3, column=0, sticky="ew")
-
-    # Create buttons for each Pass Name
-    pass_names = transport_info['PassName']  # Assuming this is now a list
+    # Displaying transport details in the given frame
+    pass_names = transport_info['PassName']
     for idx, name in enumerate(pass_names):
-        btn = ttk.Button(info_frame, text=name, command=lambda n=name: messagebox.showinfo("Selection", f"Selected PassName: {n}"))
-        btn.grid(row=0, column=idx + 1, sticky="ew", padx=5, pady=5)
+        btn = ttk.Button(transport_frame, text=name, command=lambda n=name: messagebox.showinfo("Selection", f"Selected PassName: {n}"))
+        btn.pack(side='top', fill='x', expand=True, padx=5, pady=5)
 
-    # Coverage information
-    coverage_label = tk.Label(info_frame, text=transport_info['Coverage'], font=('Gothic', 12))
-    coverage_label.grid(row=1, column=1, columnspan=len(pass_names), sticky="ew")
+    coverage_label = ttk.Label(transport_frame, text=transport_info['Coverage'], font=('Gothic', 12))
+    coverage_label.pack(side='top', fill='x', expand=True)
 
-    # Create buttons for each Duration Option
-    duration_frame = ttk.Frame(info_frame)
-    duration_frame.grid(row=2, column=1, columnspan=len(pass_names), sticky="ew")
-    for idx, duration in enumerate(transport_info['DurationOptions']):
-        btn = ttk.Button(duration_frame, text=duration, command=lambda d=duration: messagebox.showinfo("Selection", f"Selected Duration Option: {d}"))
-        btn.pack(side='left', fill='x', expand=True, padx=5, pady=5)
+    for duration in transport_info['DurationOptions']:
+        btn = ttk.Button(transport_frame, text=duration, command=lambda d=duration: messagebox.showinfo("Selection", f"Selected Duration Option: {d}"))
+        btn.pack(side='top', fill='x', expand=True, padx=5, pady=5)
 
-    # Notes information
-    notes_label = tk.Label(info_frame, text=transport_info['Notes'], font=('Gothic', 12))
-    notes_label.grid(row=3, column=1, columnspan=len(pass_names), sticky="ew")
+    notes_label = ttk.Label(transport_frame, text=transport_info['Notes'], font=('Gothic', 12))
+    notes_label.pack(side='top', fill='x', expand=True)
 
-    # Resize window to fit content
-    transport_window.update_idletasks()
-    transport_window.geometry(f"{transport_window.winfo_reqwidth()}x{transport_window.winfo_reqheight()}")
+    transport_frame.update_idletasks()
 
 
 # Initialize the main GUI window
 root = tk.Tk()
-root.title("JTPH (Japan Travel Planning Helper)")
+root.title("JTPH (Japan Travle Planning Helper)")
 
-# Define variables for the GUI
+# Define variables for the GUI 사용자 인터페이스 설정
+
+
 origin_var = tk.StringVar(value='Seoul(ICN)')  # Default value
 destination_var = tk.StringVar(value='Tokyo(HND)')  # Default value
 adults_var = tk.IntVar(value=1)  # Default value
@@ -393,12 +316,64 @@ tk.Label(root, text="Number of Adults:").grid(row=4, column=0, sticky='e')
 adults_spinbox = ttk.Spinbox(root, from_=1, to=10, textvariable=adults_var)
 adults_spinbox.grid(row=4, column=1, padx=5, pady=5)
 
-search_button = tk.Button(root, text="Search", command=lambda: [search_flights(), fetch_hotel_list(), fetch_pois(), display_transport_info(destination_var.get())])
+search_button = tk.Button(root, text="Search", command=lambda: [search_flights(), fetch_hotel_list(), fetch_pois(), display_transport_info(destination_var.get(), scrollable_frames['transport'])])
 search_button.grid(row=5, column=0, columnspan=2, padx=5, pady=5)
 
-# Connect the display_transport_info to the button's command in the GUI
-search_button = tk.Button(root, text="Search", command=lambda: [search_flights(), fetch_hotel_list(), fetch_pois(destination_var.get()), display_transport_info(destination_var.get())])
+search_button = tk.Button(root, text="Search", command=lambda: [search_flights(), fetch_hotel_list(), fetch_pois(), display_transport_info(destination_var.get(), scrollable_frames['transport'])])
+
 search_button.grid(row=5, column=0, columnspan=2, padx=5, pady=5)
 
-# Start the main loop
+main_frame = ttk.Frame(root)
+main_frame.grid(row=6, column=0, columnspan=2, sticky='nsew')
+
+# 메인 프레임의 각 행과 열에 대한 구성
+for i in range(4):
+    main_frame.grid_rowconfigure(i, weight=1)
+    main_frame.grid_columnconfigure(0, weight=1)
+
+# 프레임과 캔버스를 보관할 딕셔너리를 만듭니다.
+frames = {}
+canvases = {}
+scrollbars = {}
+scrollable_frames = {}
+
+# 각 카테고리에 대해 네 개의 프레임, 캔버스, 스크롤바를 생성합니다.
+for i, category in enumerate(["flights", "hotels", "pois", "transport"]):
+    frame = ttk.Frame(main_frame, width=850, height=250)  # Set the size
+    frame.grid(row=i, column=1, sticky='nsew', padx=2, pady=2)  # Place in a 4x1 grid
+    frames[category] = frame
+
+    canvases[category] = tk.Canvas(frames[category])
+    scrollbars[category] = ttk.Scrollbar(frames[category], orient='vertical', command=canvases[category].yview)
+    scrollbars[category].grid(row=0, column=1, sticky='ns')
+
+    canvases[category].configure(yscrollcommand=scrollbars[category].set)
+    canvases[category].grid(row=0, column=0, sticky='nsew')
+
+    scrollable_frames[category] = ttk.Frame(canvases[category])
+    canvases[category].create_window((0, 0), window=scrollable_frames[category], anchor='nw')
+
+    canvases[category].bind('<Configure>', lambda e, c=canvases[category]: c.configure(scrollregion=c.bbox("all")))
+
+def on_configure(event, canvas):
+    canvas.configure(scrollregion=canvas.bbox('all'))
+
+for category, canvas in canvases.items():
+    canvas.bind('<Configure>', lambda event, canvas=canvas: on_configure(event, canvas))
+    scrollable_frames[category].bind("<Configure>", lambda event, canvas=canvas: on_configure(event, canvas))
+    root.bind("<MouseWheel>", lambda event, canvas=canvas: on_mousewheel(event, canvas))
+
+# 수정된 부분: main_frame의 각 행과 열에 대한 구성
+main_frame.grid(row=6, column=0, columnspan=2, sticky='nsew')
+# 4x1 행렬로 변경하기 위해 row의 범위를 조정
+for i in range(4):
+    main_frame.grid_rowconfigure(i, weight=1)
+    # columnspan을 2에서 1로 변경
+    main_frame.grid_columnconfigure(0, weight=1, uniform='fred')
+
+frames[category].grid(row=i, column=0, sticky='nsew', padx=2, pady=2)
+
+root.update_idletasks()
+# root의 크기를 조정하고 메인 루프를 시작합니다
+root.geometry(f"{root.winfo_screenwidth()}x{root.winfo_screenheight()}")
 root.mainloop()
