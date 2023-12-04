@@ -1,13 +1,10 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from tkcalendar import Calendar
+from tkcalendar import Calendar, DateEntry
 from amadeus import Client, ResponseError
 from datetime import datetime
 import json
-import os
 import math
-import geopy.distance
-import geocoder
 
 # Load API keys from the JSON file
 with open('API_key.json', 'r') as file:
@@ -15,159 +12,98 @@ with open('API_key.json', 'r') as file:
     API_KEY = api_keys['AMADEUS_API_KEY']
     API_SECRET = api_keys['AMADEUS_API_SECRET']
 
+# Load API keys from the JSON file
+with open('PRODUCT_key.json', 'r') as file:
+    api_keys = json.load(file)
+    PRODUCT_KEY = api_keys['PRODUCT_API_KEY']
+    PRODUCT_SECRET = api_keys['PRODUCT_API_SECRET']
+
+# Load airport data and regions data from JSON files
+with open('airports.json', 'r') as file:
+    airports_data = json.load(file)
+    airports_korea = airports_data['Korea']
+    airports_japan = airports_data['Japan']
+
+with open('regions.json', 'r') as file:
+    regions_data = json.load(file)
+    regions = regions_data
+
 # Initialize Amadeus client
 amadeus = Client(client_id=API_KEY, client_secret=API_SECRET)
+#product = Client(client_id=PRODUCT_KEY, client_secret=PRODUCT_SECRET)
 
-
-class Hotel:
-    def __init__(self, hotel_data):
-        self.hotel_data = hotel_data
-
-    def construct_hotel(self):
-        offer = {}
-        try:
-            if 'offers' in self.hotel_data and self.hotel_data['offers']:
-                offer['price'] = self.hotel_data['offers'][0]['price']['total']
-            if 'hotel' in self.hotel_data:
-                offer['name'] = self.hotel_data['hotel'].get('name', 'No Name')
-                offer['hotelID'] = self.hotel_data['hotel'].get('hotelId', 'No ID')
-                lat = self.hotel_data['hotel'].get('latitude')
-                lon = self.hotel_data['hotel'].get('longitude')
-                if lat and lon:
-                    address = geocoder.osm([lat, lon], method='reverse')
-                    offer['address'] = self.construct_address(address.json)
-        except Exception as e:
-            print(f"Error constructing hotel info: {e}")
-        return offer
-
-    @staticmethod
-    def construct_address(address_json):
-        street = address_json.get('street', 'Unknown Street')
-        house_number = address_json.get('houseNumber') or address_json.get('housenumber', '')
-        return f"{street} {house_number}".strip()
-
-
-# Function to convert specific IATA codes to 'TYO'
+# Convert specific IATA codes to 'TYO' or 'OSA'
 def convert_iata_code(iata_code):
     if iata_code in ['HND', 'NRT']:
         return 'TYO'
+    if iata_code in ['KIX', 'ITM']:
+        return 'OSA'
     return iata_code
 
-# Separate the airports by country
-airports_korea = {
-    'ICN': 'Seoul(ICN)', 'GMP': 'Seoul(GMP)', 'PUS': 'Busan', 'CJU': 'Jeju',
-    'MWX': 'Muan', 'YNY': 'Yangyang', 'CJJ': 'Cheongju', 'TAE': 'Daegu'
-}
-airports_japan = {
-    'HND': 'Tokyo(HND)', 'NRT': 'Tokyo(NRT)', 'KIX': 'Osaka', 'FUK': 'Fukuoka',
-    'NGO': 'Nagoya', 'HIJ': 'Hiroshima', 'HSG': 'Saga', 'FSZ': 'Shizuoka',
-    'CTS': 'Sapporo', 'KKJ': 'Kitakyushu', 'TAK': 'Takamatsu',
-    'KMJ': 'Kumamoto', 'MYJ': 'Matsuyama', 'OKA': 'Okinawa', 'SDJ': 'Sendai',
-    'NGS': 'Nagasaki', 'TOY': 'Toyama'
-}
-def show_hotels_by_district(district, check_in_date, check_out_date):
-    # 지역에 따른 좌표 설정
-    district_coords = {
-        'Shibuya': (35.6620, 139.7036),
-        'Shinjuku': (35.6938, 139.7036),
-        'Ginza': (35.6721, 139.7708),
-    }
-    selected_coords = district_coords[district]
-
-    # API 호출 및 호텔 정보 표시
-    search_and_display_hotels(selected_coords, check_in_date, check_out_date)
-
-    try:
-        # Assuming you have check-in and check-out dates, 
-        # otherwise you'll need to get them from the user's input
-        check_in_date = '2023-01-01'  # Placeholder, use actual date
-        check_out_date = '2023-01-03'  # Placeholder, use actual date
-
-        # This should be a hotel search API call, which includes price data
-        response = amadeus.shopping.hotel_offers_search.get(
-            latitude=selected_coords[0],
-            longitude=selected_coords[1],
-            checkInDate=check_in_date,
-            checkOutDate=check_out_date
-        )
-        hotels_data = response.data
-
-        # Create Hotel instances and construct hotel offers
-        hotel_offers = [Hotel(hotel).construct_hotel() for hotel in hotels_data]
-
-        # Display hotels with their complete data
-        display_hotels(hotel_offers)
-
-    except ResponseError as error:
-        messagebox.showerror("Error", f"An error occurred: {error}")
-
-
-# Function to convert price from EUR to KRW
+# Convert price from EUR to KRW
 def convert_price(price):
-    # Dummy conversion rate, you should use real-time rates or another method
-    conversion_rate = 1350
+    conversion_rate = 1350  # Example conversion rate
     return int(float(price) * conversion_rate)
 
+JPY_TO_KRW_CONVERSION_RATE = 10  # This is an example rate, please use the current accurate rate
 
-# Function to convert flight duration from ISO format (PT2H25M) to human-readable format (2h 25m)
+def convert_price_from_jpy_to_krw(price_jpy):
+    return int(float(price_jpy) * JPY_TO_KRW_CONVERSION_RATE)
+
+# Convert flight duration from ISO format to human-readable format
 def convert_duration(duration):
     try:
         hours = int(duration[2:duration.find('H')])
         minutes = int(duration[duration.find('H')+1:duration.find('M')])
         return f"{hours}h {minutes}m"
     except ValueError:
-        return duration  # Return original if conversion is not possible
+        return duration
 
-# 항공편 세부 정보 창의 스크롤 기능 활성화
+def on_mousewheel(event, canvas):
+    canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+
+# Display flight details in a new window
 def display_flight_details(flight_data):
     new_window = tk.Toplevel(root)
-    new_window.title("항공편 세부 정보")
-    new_window.geometry("900x600")  # 창 크기 조정
+    new_window.title("Flight Details")
+    new_window.geometry("860x300")
 
-    # Scrollable canvas and frame
     canvas = tk.Canvas(new_window)
     scrollbar = ttk.Scrollbar(new_window, orient="vertical", command=canvas.yview)
     scrollable_frame = ttk.Frame(canvas)
 
-    # Configure canvas
     canvas.configure(yscrollcommand=scrollbar.set)
     canvas.bind('<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
     canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
 
-    # 스크롤바와 캔버스를 바인딩
-    canvas.bind_all("<MouseWheel>", lambda e: canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
+    # Add the scrollbar to the canvas
+    scrollbar.pack(side="right", fill="y")
+    # Bind the mousewheel scrolling to the scrollbar
+    new_window.bind("<MouseWheel>", lambda e: on_mousewheel(e, canvas))
 
-    # Display each flight offer
     for offer in flight_data:
-        # Create a frame for each round trip
-        round_trip_frame = ttk.Frame(scrollable_frame, padding=10)
+        round_trip_frame = ttk.Frame(scrollable_frame, padding=10, borderwidth=2, relief="groove")
         round_trip_frame.pack(fill='x', expand=True, pady=10)
-        round_trip_frame.configure(borderwidth=2, relief="groove")
-
-        # Create labels for each leg of the trip
         for i, itinerary in enumerate(offer['itineraries']):
-            flight_info = f"항공편 {i+1} - 출발: {itinerary['segments'][0]['departure']['iataCode']} {itinerary['segments'][0]['departure']['at']}, " \
-                          f"도착: {itinerary['segments'][-1]['arrival']['iataCode']} {itinerary['segments'][-1]['arrival']['at']}, " \
-                          f"소요 시간: {convert_duration(itinerary['duration'])}, " \
-                          f"항공사: {itinerary['segments'][0]['carrierCode']}"
+            flight_info = f"Flight {i+1} - Departure: {itinerary['segments'][0]['departure']['iataCode']} {itinerary['segments'][0]['departure']['at']}, " \
+                          f"Arrival: {itinerary['segments'][-1]['arrival']['iataCode']} {itinerary['segments'][-1]['arrival']['at']}, " \
+                          f"Duration: {convert_duration(itinerary['duration'])}, " \
+                          f"Airline: {itinerary['segments'][0]['carrierCode']}"
             label = tk.Label(round_trip_frame, text=flight_info, bg="#f0f0f0", fg="black", font=('Gothic', 12))
             label.pack(fill='x', expand=True, pady=5)
 
-        # Display price in KRW
-        price_info = f"가격: {convert_price(offer['price']['total'])}원"
+        price_info = f"Price: {convert_price(offer['price']['total'])} KRW"
         price_label = tk.Label(round_trip_frame, text=price_info, bg="#d0e0d0", fg="black", font=('Gothic', 14, 'bold'))
         price_label.pack(fill='x', expand=True, pady=5)
 
-    # Pack everything
     canvas.pack(side="left", fill="both", expand=True)
     scrollbar.pack(side="right", fill="y")
 
-# Function to search flights using Amadeus library
+# Search flights function
 def search_flights():
     origin_city = origin_var.get()
     destination_city = destination_var.get()
 
-    # 출발지와 목적지 공항 코드 찾기
     origin_code = next((code for code, city in airports_korea.items() if city == origin_city), None)
     destination_code = next((code for code, city in airports_japan.items() if city == destination_city), None)
     departure_date = datetime.strptime(departure_calendar.get_date(), '%y. %m. %d.').strftime('%Y-%m-%d')
@@ -179,109 +115,204 @@ def search_flights():
             destinationLocationCode=destination_code,
             departureDate=departure_date,
             returnDate=return_date,
-            adults=1
+            adults=adults_var.get()
         )
         display_flight_details(response.data)
     except ResponseError as error:
         messagebox.showerror("Error", f"An error occurred: {error}")
 
-# 호텔 검색을 수행하고 결과를 표시하는 함수
-def search_and_display_hotels(city_code, check_in_date, check_out_date):
+# Fetch hotel list function
+def fetch_hotel_list():
+    destination_city = destination_var.get()
+    destination_code = convert_iata_code(next((code for code, city in airports_japan.items() if city == destination_city), None))
+
+    check_in_date = datetime.strptime(departure_calendar.get_date(), '%y. %m. %d.').strftime('%Y-%m-%d')
+    check_out_date = datetime.strptime(return_calendar.get_date(), '%y. %m. %d.').strftime('%Y-%m-%d')
+
     try:
-        # 호텔 검색 API 호출
-        response = amadeus.shopping.hotel_offers_search.get(
-            cityCode=city_code, 
-            checkInDate=check_in_date, 
-            checkOutDate=check_out_date
+        hotel_list_response = amadeus.reference_data.locations.hotels.by_city.get(cityCode=destination_code)
+        hotel_ids = [hotel['hotelId'] for hotel in hotel_list_response.data]
+
+        hotel_offers_response = amadeus.shopping.hotel_offers_search.get(
+            hotelIds=hotel_ids,
+            checkInDate=check_in_date,
+            checkOutDate=check_out_date,
+            adults=adults_var.get()
         )
-        hotels_data = response.data
-
-        # 응답으로부터 호텔 정보 생성
-        hotel_offers = [Hotel(hotel).construct_hotel() for hotel in hotels_data]
-
-        # 호텔 정보 표시
-        display_hotels(hotel_offers)
-
+        hotels = hotel_offers_response.data
+        display_hotels(hotels, destination_code)
     except ResponseError as error:
-        messagebox.showerror("Error", f"An error occurred: {error}")
+        messagebox.showerror("Error", "Failed to fetch hotels: " + str(error))
 
-# 사용자 입력으로부터 체크인, 체크아웃 날짜 얻기
-# 날짜 형식을 '%Y-%m-%d'로 변환합니다.
-def format_date(date_str):
-    # 날짜 문자열을 공백으로 분할합니다.
-    parts = date_str.split('.')
-    # 공백을 제거하고, 각 부분을 정수로 변환합니다.
-    parts = [int(part.strip()) for part in parts if part.strip()]
-    # 세기를 더하여 연도를 완성합니다. (예: 23 -> 2023)
-    parts[0] += 2000
-    # 날짜 객체를 반환합니다.
-    return datetime(parts[0], parts[1], parts[2]).date()
+def display_hotels(hotels, iata_code):
+    new_window = tk.Toplevel(root)
+    new_window.title("Hotels List")
+    new_window.geometry("860x300")
+    
+    # Main frame for list of hotels
+    hotels_frame = ttk.Frame(new_window)
+    hotels_frame.pack(fill=tk.BOTH, expand=True)
 
-def search_and_book_hotel():
-    selected_destination = destination_var.get()
+    # Scrollable list for hotels
+    hotels_canvas = tk.Canvas(hotels_frame)
+    hotels_scrollbar = ttk.Scrollbar(hotels_frame, orient="vertical", command=hotels_canvas.yview)
+    hotels_scrollable_frame = ttk.Frame(hotels_canvas)
 
-    # IATA 코드 추출
-    iata_code = selected_destination.split('(')[-1].rstrip(')')
-    converted_iata_code = convert_iata_code(iata_code)
+    hotels_canvas.configure(yscrollcommand=hotels_scrollbar.set)
+    hotels_canvas.bind('<Configure>', lambda e: hotels_canvas.configure(scrollregion=hotels_canvas.bbox("all")))
+    hotels_canvas_window = hotels_canvas.create_window((0, 0), window=hotels_scrollable_frame, anchor="nw")
 
-    # 캘린더 위젯으로부터 날짜를 가져와서 올바른 형식으로 변환합니다.
-    check_in_date = format_date(departure_calendar.get_date())
-    check_out_date = format_date(return_calendar.get_date())
+    for hotel in hotels:
+        # 호텔 가격을 엔화에서 원화로 변환합니다.
+        price_krw = convert_price_from_jpy_to_krw(hotel['offers'][0]['price']['total'])
 
-    # 도쿄가 선택되었을 때만 지역 선택 창을 표시합니다.
-    if converted_iata_code == 'TYO':
-        district_window = tk.Toplevel(root)
-        district_window.title("Select an Area")
+        hotel_frame = ttk.Frame(hotels_scrollable_frame, padding=10, borderwidth=2, relief="groove")
+        hotel_frame.pack(fill='x', expand=True, pady=5)
+        
+        hotel_name_label = ttk.Label(hotel_frame, text=hotel['hotel']['name'], font=('Gothic', 12, 'bold'))
+        hotel_name_label.pack(side='left', fill='x', expand=True)
+        
+        hotel_price_label = ttk.Label(hotel_frame, text=f"Price: {price_krw} KRW", font=('Gothic', 12))
+        hotel_price_label.pack(side='left', fill='x', expand=True)
 
-        # 각 지역 버튼에 대한 콜백 설정
-        for district in ['Shibuya', 'Shinjuku', 'Ginza']:
-            btn = tk.Button(
-                district_window,
-                text=district,
-                command=lambda d=district: show_hotels_by_district(d, check_in_date, check_out_date)
-            )
-            btn.pack()
-    else:
-        # 호텔 검색 및 표시 함수 호출
-        search_and_display_hotels(converted_iata_code, check_in_date, check_out_date)
+    hotels_scrollbar.pack(side='right', fill='y')
+    hotels_canvas.pack(side='left', fill='both', expand=True)
 
-def display_hotels(hotel_offers):
-    hotels_window = tk.Toplevel(root)
-    hotels_window.title("Available Hotels")
-    hotels_window.geometry("900x600")
+    # Region buttons frame
+    region_buttons_frame = ttk.Frame(new_window)
+    region_buttons_frame.pack(fill=tk.X, expand=False)
 
-    scrollbar = ttk.Scrollbar(hotels_window)
-    scrollbar.pack(side='right', fill='y')
+    if iata_code in regions:
+        for region_name, coords in regions[iata_code].items():
+            region_button = ttk.Button(region_buttons_frame, text=region_name, command=lambda rn=region_name: sort_hotels(hotels, rn, hotels_scrollable_frame, hotels_canvas, hotels_canvas_window))
+            region_button.pack(side='left', padx=5, pady=5)
 
-    hotels_listbox = tk.Listbox(hotels_window, yscrollcommand=scrollbar.set)
-    for offer in hotel_offers:
-        # Ensure all keys are present before accessing them
-        name = offer.get('name', 'Unknown Hotel')
-        address = offer.get('address', 'Unknown Address')
-        price = offer.get('price', 'Unknown Price')
-        hotel_info = f"{name} - {address}, Price: {price}"
-        hotels_listbox.insert(tk.END, hotel_info)
+    # Bind the scroll event to the canvas
+    new_window.bind("<MouseWheel>", lambda e: hotels_canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
 
-    hotels_listbox.pack(side='left', fill='both', expand=True)
-    scrollbar.config(command=hotels_listbox.yview)
+
+# Sort hotels function
+def sort_hotels(hotels, region_name, hotels_scrollable_frame, hotels_canvas, hotels_canvas_window):
+    destination_code = convert_iata_code(next((code for code, city in airports_japan.items() if city == destination_var.get()), None))
+    region_coords = regions[destination_code][region_name]
+
+    def haversine(lat1, lon1, lat2, lon2):
+        R = 6371
+        phi1 = math.radians(lat1)
+        phi2 = math.radians(lat2)
+        delta_phi = math.radians(lat2 - lat1)
+        delta_lambda = math.radians(lon2 - lon1)
+        a = math.sin(delta_phi / 2)**2 + math.cos(phi1) * math.cos(phi2) * math.sin(delta_lambda / 2)**2
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+        return R * c
+
+    def get_hotel_coords(hotel):
+        if 'latitude' in hotel['hotel'] and 'longitude' in hotel['hotel']:
+            return hotel['hotel']['latitude'], hotel['hotel']['longitude']
+        else:
+            return None, None
+
+    sorted_hotels = []
+    for hotel in hotels:
+        lat, lon = get_hotel_coords(hotel)
+        if lat is not None and lon is not None:
+            hotel['distance'] = haversine(region_coords['lat'], region_coords['lon'], lat, lon)
+            sorted_hotels.append(hotel)
+    sorted_hotels.sort(key=lambda x: x['distance'])
+
+    # Clear the current hotel frames
+    for widget in hotels_scrollable_frame.winfo_children():
+        widget.destroy()
+
+    # Add sorted hotel frames back into the canvas with converted prices
+    for hotel in sorted_hotels:
+        price_krw = convert_price_from_jpy_to_krw(hotel['offers'][0]['price']['total'])
+
+        hotel_frame = ttk.Frame(hotels_scrollable_frame, padding=10, borderwidth=2, relief="groove")
+        hotel_frame.pack(fill='x', expand=True, pady=5)
+        
+        hotel_name_label = ttk.Label(hotel_frame, text=hotel['hotel']['name'], font=('Gothic', 12, 'bold'))
+        hotel_name_label.pack(side='left', fill='x', expand=True)
+        
+        hotel_price_label = ttk.Label(hotel_frame, text=f"Price: {price_krw} KRW", font=('Gothic', 12))
+        hotel_price_label.pack(side='left', fill='x', expand=True)
+
+    # Update the scroll region of the canvas
+    hotels_canvas.configure(scrollregion=hotels_canvas.bbox("all"))
+
+def fetch_pois():
+    destination_iata_code = convert_iata_code(next((code for code, city in airports_japan.items() if city == destination_var.get()), None))
+
+    with open('regions.json', 'r') as file:
+        regions_data = json.load(file)
+
+    if destination_iata_code in regions_data:
+        region_coords = regions_data[destination_iata_code]
+
+        for region_name, coords in region_coords.items():
+            try:
+                response = amadeus.reference_data.locations.points_of_interest.get(
+                    latitude=41.397158,
+                    longitude=2.160873,
+                    radius=2
+                )
+                display_pois(response.data, region_name)
+                break
+            except ResponseError as error:
+                error_code = error.response.status_code
+                error_description = error.response.result
+                #messagebox.showerror(
+                #    "Error",
+                #    f"Failed to fetch POIs for {region_name}: {error_code} - {error_description}"
+                #) amadeus api test key에서 일본 지역은 사용할 수 없다고 해서 주석처리 함.
+
+
+
+def display_pois(pois_data, region_name):
+    new_window = tk.Toplevel(root)
+    new_window.title(f"Points of Interest in {region_name}")
+    new_window.geometry("860x600")
+
+    pois_canvas = tk.Canvas(new_window)
+    pois_scrollbar = ttk.Scrollbar(new_window, orient="vertical", command=pois_canvas.yview)
+    pois_scrollable_frame = ttk.Frame(pois_canvas)
+
+    pois_canvas.configure(yscrollcommand=pois_scrollbar.set)
+    pois_canvas.bind('<Configure>', lambda e: pois_canvas.configure(scrollregion=pois_canvas.bbox("all")))
+    pois_canvas.create_window((0, 0), window=pois_scrollable_frame, anchor="nw")
+
+    pois_scrollbar.pack(side="right", fill="y")
+    pois_canvas.pack(side="left", fill="both", expand=True)
+
+    # Bind the mousewheel scrolling to the scrollbar
+    new_window.bind("<MouseWheel>", lambda e: on_mousewheel(e, pois_canvas))
+
+    for poi in pois_data:
+        poi_frame = ttk.Frame(pois_scrollable_frame, padding=10)
+        poi_frame.pack(fill='x', expand=True)
+
+        poi_name_label = ttk.Label(poi_frame, text=poi['name'], font=('Gothic', 12, 'bold'))
+        poi_name_label.pack(side='left', fill='x', expand=True)
+
+        poi_category_label = ttk.Label(poi_frame, text=f"Category: {poi['category']}", font=('Gothic', 12))
+        poi_category_label.pack(side='left', fill='x', expand=True)
 
 
 # Initialize the main GUI window
 root = tk.Tk()
-root.title("Search")
+root.title("Flight and Hotel Booking Application")
 
 # Define variables for the GUI
 origin_var = tk.StringVar(value='Seoul(ICN)')  # Default value
 destination_var = tk.StringVar(value='Tokyo(HND)')  # Default value
+adults_var = tk.IntVar(value=1)  # Default value
 
 # Create widgets for the GUI
 tk.Label(root, text="Origin:").grid(row=0, column=0, sticky='e')
-# 출발지 콤보박스에 한국 공항만 설정
 origin_combobox = ttk.Combobox(root, textvariable=origin_var, values=list(airports_korea.values()))
 origin_combobox.grid(row=0, column=1, padx=5, pady=5)
 
 tk.Label(root, text="Destination:").grid(row=1, column=0, sticky='e')
-# 도착지 콤보박스에 일본 공항만 설정
 destination_combobox = ttk.Combobox(root, textvariable=destination_var, values=list(airports_japan.values()))
 destination_combobox.grid(row=1, column=1, padx=5, pady=5)
 
@@ -293,12 +324,12 @@ return_calendar = Calendar(root, selectmode='day')
 return_calendar.grid(row=3, column=1, padx=5, pady=5)
 tk.Label(root, text="Return Date:").grid(row=3, column=0, sticky='e')
 
-search_button = tk.Button(root, text="Search Flights", command=search_flights)
-search_button.grid(row=4, column=0, columnspan=2, padx=5, pady=5)
+tk.Label(root, text="Number of Adults:").grid(row=4, column=0, sticky='e')
+adults_spinbox = ttk.Spinbox(root, from_=1, to=10, textvariable=adults_var)
+adults_spinbox.grid(row=4, column=1, padx=5, pady=5)
 
-# 호텔 검색 버튼 추가
-hotel_search_button = tk.Button(root, text="Search Hotels", command=search_and_book_hotel)
-hotel_search_button.grid(row=5, column=0, columnspan=2, padx=5, pady=5)
+search_button = tk.Button(root, text="Search Flights and Hotels", command=lambda: [search_flights(), fetch_hotel_list(), fetch_pois()])
+search_button.grid(row=5, column=0, columnspan=2, padx=5, pady=5)
 
 # Start the main loop
 root.mainloop()

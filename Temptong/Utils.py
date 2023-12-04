@@ -1,25 +1,22 @@
-# base_application.py
-import json
-from amadeus import Client
 
-class BaseApplication:
-    def __init__(self):
-        self.amadeus = self.initialize_amadeus_client()
-
-    def initialize_amadeus_client(self):
-        with open('API_key.json', 'r') as file:
-            api_keys = json.load(file)
-        return Client(client_id=api_keys['AMADEUS_API_KEY'], client_secret=api_keys['AMADEUS_API_SECRET'])
-
+class Utils:
     @staticmethod
     def convert_iata_code(iata_code):
         if iata_code in ['HND', 'NRT']:
             return 'TYO'
+        if iata_code in ['KIX', 'ITM']:
+            return 'OSA'
         return iata_code
+    
+    @staticmethod
+    def convert_price(price):
+        conversion_rate = 1350  # Example conversion rate
+        return int(float(price) * conversion_rate)
 
     @staticmethod
-    def convert_price(price, conversion_rate=1350):
-        return int(float(price) * conversion_rate)
+    def convert_price_from_jpy_to_krw(price_jpy):
+        JPY_TO_KRW_CONVERSION_RATE = 10  # Example rate
+        return int(float(price_jpy) * JPY_TO_KRW_CONVERSION_RATE)
 
     @staticmethod
     def convert_duration(duration):
@@ -29,3 +26,7 @@ class BaseApplication:
             return f"{hours}h {minutes}m"
         except ValueError:
             return duration
+
+    @staticmethod
+    def on_mousewheel(event, canvas):
+        canvas.yview_scroll(int(-1*(event.delta/120)), "units")

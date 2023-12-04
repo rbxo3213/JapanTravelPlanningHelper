@@ -12,6 +12,12 @@ with open('API_key.json', 'r') as file:
     API_KEY = api_keys['AMADEUS_API_KEY']
     API_SECRET = api_keys['AMADEUS_API_SECRET']
 
+# Load API keys from the JSON file
+with open('PRODUCT_key.json', 'r') as file:
+    api_keys = json.load(file)
+    PRODUCT_KEY = api_keys['PRODUCT_API_KEY']
+    PRODUCT_SECRET = api_keys['PRODUCT_API_SECRET']
+
 # Load airport data and regions data from JSON files
 with open('airports.json', 'r') as file:
     airports_data = json.load(file)
@@ -24,6 +30,7 @@ with open('regions.json', 'r') as file:
 
 # Initialize Amadeus client
 amadeus = Client(client_id=API_KEY, client_secret=API_SECRET)
+#product = Client(client_id=PRODUCT_KEY, client_secret=PRODUCT_SECRET)
 
 # Convert specific IATA codes to 'TYO' or 'OSA'
 def convert_iata_code(iata_code):
@@ -54,7 +61,7 @@ def convert_duration(duration):
 
 def on_mousewheel(event, canvas):
     canvas.yview_scroll(int(-1*(event.delta/120)), "units")
-    
+
 # Display flight details in a new window
 def display_flight_details(flight_data):
     new_window = tk.Toplevel(root)
@@ -232,6 +239,65 @@ def sort_hotels(hotels, region_name, hotels_scrollable_frame, hotels_canvas, hot
 
     # Update the scroll region of the canvas
     hotels_canvas.configure(scrollregion=hotels_canvas.bbox("all"))
+
+def fetch_pois():
+    destination_iata_code = convert_iata_code(next((code for code, city in airports_japan.items() if city == destination_var.get()), None))
+
+    with open('regions.json', 'r') as file:
+        regions_data = json.load(file)
+
+    if destination_iata_code in regions_data:
+        region_coords = regions_data[destination_iata_code]
+
+        for region_name, coords in region_coords.items():
+            try:
+                response = amadeus.reference_data.locations.points_of_interest.get(
+                    latitude=41.397158,
+                    longitude=2.160873,
+                    radius=2
+                )
+                display_pois(response.data, region_name)
+                break
+            except ResponseError as error:
+                error_code = error.response.status_code
+                error_description = error.response.result
+                #messagebox.showerror(
+                #    "Error",
+                #    f"Failed to fetch POIs for {region_name}: {error_code} - {error_description}"
+                #) amadeus api test key에서 일본 지역은 사용할 수 없다고 해서 주석처리 함.
+
+
+
+def display_pois(pois_data, region_name):
+    new_window = tk.Toplevel(root)
+    new_window.title(f"Points of Interest in {region_name}")
+    new_window.geometry("860x600")
+
+    pois_canvas = tk.Canvas(new_window)
+    pois_scrollbar = ttk.Scrollbar(new_window, orient="vertical", command=pois_canvas.yview)
+    pois_scrollable_frame = ttk.Frame(pois_canvas)
+
+    pois_canvas.configure(yscrollcommand=pois_scrollbar.set)
+    pois_canvas.bind('<Configure>', lambda e: pois_canvas.configure(scrollregion=pois_canvas.bbox("all")))
+    pois_canvas.create_window((0, 0), window=pois_scrollable_frame, anchor="nw")
+
+    pois_scrollbar.pack(side="right", fill="y")
+    pois_canvas.pack(side="left", fill="both", expand=True)
+
+    # Bind the mousewheel scrolling to the scrollbar
+    new_window.bind("<MouseWheel>", lambda e: on_mousewheel(e, pois_canvas))
+
+    for poi in pois_data:
+        poi_frame = ttk.Frame(pois_scrollable_frame, padding=10)
+        poi_frame.pack(fill='x', expand=True)
+
+        poi_name_label = ttk.Label(poi_frame, text=poi['name'], font=('Gothic', 12, 'bold'))
+        poi_name_label.pack(side='left', fill='x', expand=True)
+
+        poi_category_label = ttk.Label(poi_frame, text=f"Category: {poi['category']}", font=('Gothic', 12))
+        poi_category_label.pack(side='left', fill='x', expand=True)
+
+
 # Initialize the main GUI window
 root = tk.Tk()
 root.title("Flight and Hotel Booking Application")
@@ -262,7 +328,7 @@ tk.Label(root, text="Number of Adults:").grid(row=4, column=0, sticky='e')
 adults_spinbox = ttk.Spinbox(root, from_=1, to=10, textvariable=adults_var)
 adults_spinbox.grid(row=4, column=1, padx=5, pady=5)
 
-search_button = tk.Button(root, text="Search Flights and Hotels", command=lambda: [search_flights(), fetch_hotel_list()])
+search_button = tk.Button(root, text="Search Flights and Hotels", command=lambda: [search_flights(), fetch_hotel_list(), fetch_pois()])
 search_button.grid(row=5, column=0, columnspan=2, padx=5, pady=5)
 
 # Start the main loop
