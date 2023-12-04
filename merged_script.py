@@ -213,22 +213,23 @@ def sort_hotels(hotels, region_name, hotels_scrollable_frame, hotels_canvas, hot
             sorted_hotels.append(hotel)
     sorted_hotels.sort(key=lambda x: x['distance'])
 
-     # Clear the current hotel frames
+    # Clear the current hotel frames
     for widget in hotels_scrollable_frame.winfo_children():
         widget.destroy()
 
-    # Add sorted hotel frames back into the canvas
+    # Add sorted hotel frames back into the canvas with converted prices
     for hotel in sorted_hotels:
+        price_krw = convert_price_from_jpy_to_krw(hotel['offers'][0]['price']['total'])
+
         hotel_frame = ttk.Frame(hotels_scrollable_frame, padding=10, borderwidth=2, relief="groove")
         hotel_frame.pack(fill='x', expand=True, pady=5)
         
-        # Create and pack the labels for hotel name and price into the hotel_frame
         hotel_name_label = ttk.Label(hotel_frame, text=hotel['hotel']['name'], font=('Gothic', 12, 'bold'))
         hotel_name_label.pack(side='left', fill='x', expand=True)
         
-        hotel_price_label = ttk.Label(hotel_frame, text=f"Price: {convert_price(hotel['offers'][0]['price']['total'])} KRW", font=('Gothic', 12))
+        hotel_price_label = ttk.Label(hotel_frame, text=f"Price: {price_krw} KRW", font=('Gothic', 12))
         hotel_price_label.pack(side='left', fill='x', expand=True)
-    
+
     # Update the scroll region of the canvas
     hotels_canvas.configure(scrollregion=hotels_canvas.bbox("all"))
 # Initialize the main GUI window
