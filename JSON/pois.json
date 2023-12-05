@@ -1,0 +1,678 @@
+{
+  "TYO": [
+    {
+      "Name": "Tokyo Tower",
+      "Category": "Landmark",
+      "Location": "Minato",
+      "Description": "An iconic landmark and observation tower in Tokyo."
+    },
+    {
+      "Name": "Meiji Shrine",
+      "Category": "Historical Site",
+      "Location": "Shibuya",
+      "Description": "One of Japan's most famous shrines, surrounded by a lush forest."
+    },
+    {
+      "Name": "Senso-ji Temple",
+      "Category": "Cultural Site",
+      "Location": "Asakusa",
+      "Description": "An ancient Buddhist temple, known for its Thunder Gate and vibrant shopping street."
+    },
+    {
+      "Name": "Shibuya Crossing",
+      "Category": "Urban Attraction",
+      "Location": "Shibuya",
+      "Description": "One of the world's busiest pedestrian crossings and a symbol of Tokyo's energy."
+    },
+    {
+      "Name": "Ueno Park",
+      "Category": "Park",
+      "Location": "Ueno",
+      "Description": "A spacious public park with museums, a zoo, and cherry blossoms in spring."
+    },
+    {
+      "Name": "Tokyo Skytree",
+      "Category": "Landmark",
+      "Location": "Sumida",
+      "Description": "A broadcasting tower and observation deck, offering panoramic views of Tokyo."
+    },
+    {
+      "Name": "Tokyo Imperial Palace",
+      "Category": "Historical Site",
+      "Location": "Chiyoda",
+      "Description": "The primary residence of the Emperor of Japan, surrounded by beautiful gardens."
+    },
+    {
+      "Name": "Tokyo Disneyland",
+      "Category": "Theme Park",
+      "Location": "Urayasu",
+      "Description": "A major theme park in Tokyo, offering attractions based on Disney movies."
+    },
+    {
+      "Name": "Tokyo DisneySea",
+      "Category": "Theme Park",
+      "Location": "Urayasu",
+      "Description": "A major theme park in Tokyo, offering attractions based on Disney movies."
+    },
+    {
+      "Name": "Tokyo National Museum",
+      "Category": "Museum",
+      "Location": "Ueno",
+      "Description": "A museum in Ueno, featuring a large collection of Japanese art and artifacts."
+    },
+    {
+      "Name": "Tokyo Metropolitan Government Building",
+      "Category": "Landmark",
+      "Location": "Shinjuku",
+      "Description": "A landmark building in Shinjuku, offering panoramic views of Tokyo."
+    },
+    {
+      "Name": "Ginza",
+      "Category": "Shopping District",
+      "Location": "Chuo",
+      "Description": "A famous shopping district in Tokyo, known for its luxury boutiques and department stores."
+    },
+    {
+      "Name": "Tsukiji Outer Market",
+      "Category": "Shopping District",
+      "Location": "Chuo",
+      "Description": "A bustling market in Tokyo, known for its fresh seafood and street food."
+    },
+    {
+      "Name": "Tokyo Dome City",
+      "Category": "Shopping and Entertainment",
+      "Location": "Bunkyo",
+      "Description": "A large entertainment complex in Tokyo, featuring an amusement park and shopping mall."
+    },
+    {
+      "Name": "Tokyo Joypolis",
+      "Category": "Theme Park",
+      "Location": "Odaiba",
+      "Description": "A major theme park in Tokyo, offering a range of attractions and virtual reality experiences."
+    }
+  ],
+  "OSA": [
+    {
+      "Name": "Osaka Castle",
+      "Category": "Historical Site",
+      "Location": "Chuo Ward",
+      "Description": "A famous castle with beautiful gardens and a museum."
+    },
+    {
+      "Name": "Dotonbori",
+      "Category": "Shopping and Entertainment",
+      "Location": "Namba",
+      "Description": "A bustling shopping and restaurant district in Osaka."
+    },
+    {
+      "Name": "Universal Studios Japan",
+      "Category": "Theme Park",
+      "Location": "Konohana Ward",
+      "Description": "A major theme park with attractions based on popular movies."
+    },
+    {
+      "Name": "Osaka Aquarium Kaiyukan",
+      "Category": "Aquarium",
+      "Location": "Minato Ward",
+      "Description": "One of the largest public aquariums in the world."
+    },
+    {
+      "Name": "Shitennoji Temple",
+      "Category": "Cultural Site",
+      "Location": "Tennoji Ward",
+      "Description": "One of Japan's oldest Buddhist temples."
+    },
+    {
+      "Name": "Kinkakuji Temple",
+      "Category": "Historical Site",
+      "Location": "Kita Ward",
+      "Description": "A famous Buddhist temple known for its golden pavilion."
+    },
+    {
+      "Name": "Kiyomizu-dera Temple",
+      "Category": "Historical Site",
+      "Location": "Higashiyama Ward",
+      "Description": "A famous Buddhist temple known for its wooden stage and views of Kyoto."
+    },
+    {
+      "Name": "Fushimi Inari Taisha Shrine",
+      "Category": "Cultural Site",
+      "Location": "Fushimi Ward",
+      "Description": "A famous Shinto shrine known for its thousands of torii gates."
+    },
+    {
+      "Name": "Arashiyama Bamboo Grove",
+      "Category": "Natural Attraction",
+      "Location": "Ukyo Ward",
+      "Description": "A scenic bamboo grove in Kyoto, known for its walking trails and temples."
+    },
+    {
+      "Name": "Nijo Castle",
+      "Category": "Historical Site",
+      "Location": "Nakagyo Ward",
+      "Description": "A famous castle known for its beautiful gardens and nightingale floors."
+    },
+    {
+      "Name": "Kurama-dera Temple",
+      "Category": "Historical Site",
+      "Location": "Sakyo Ward",
+      "Description": "A Buddhist temple in Kyoto, known for its hiking trails and views of Kyoto."
+    },
+    {
+      "Name": "Katsura Imperial Villa",
+      "Category": "Historical Site",
+      "Location": "Nishikyo Ward",
+      "Description": "A famous imperial villa known for its beautiful gardens and architecture."
+    },
+    {
+      "Name": "Nishiki Market",
+      "Category": "Shopping District",
+      "Location": "Nakagyo Ward",
+      "Description": "A bustling market in Kyoto, known for its fresh seafood and street food."
+    },
+    {
+      "Name": "Kyoto Tower",
+      "Category": "Landmark",
+      "Location": "Shimogyo Ward",
+      "Description": "A landmark tower in Kyoto, offering panoramic views of the city."
+    },
+    {
+      "Name": "Nara park",
+      "Category": "Park",
+      "Location": "Nara",
+      "Description": "A large public park in Nara, known for its deer and temples."
+    }
+  ],
+  "FUK": [
+    {
+      "Name": "Fukuoka Tower",
+      "Category": "Landmark",
+      "Location": "Sawara Ward",
+      "Description": "The tallest seaside tower in Japan, offering panoramic views of the city."
+    },
+    {
+      "Name": "Ohori Park",
+      "Category": "Park",
+      "Location": "Chuo Ward",
+      "Description": "A peaceful park centered around a large pond, perfect for strolling and relaxation."
+    },
+    {
+      "Name": "Kushida Shrine",
+      "Category": "Cultural Site",
+      "Location": "Hakata Ward",
+      "Description": "A historical Shinto shrine known for its annual Gion Yamakasa festival."
+    },
+    {
+      "Name": "Canal City Hakata",
+      "Category": "Shopping Center",
+      "Location": "Hakata Ward",
+      "Description": "A large shopping and entertainment complex with a canal running through it."
+    },
+    {
+      "Name": "Fukuoka Asian Art Museum",
+      "Category": "Museum",
+      "Location": "Hakata Ward",
+      "Description": "A museum featuring modern and contemporary Asian art."
+    },
+    {
+      "Name": "Fukuoka Castle Ruins",
+      "Category": "Historical Site",
+      "Location": "Chuo Ward",
+      "Description": "Historical ruins in Fukuoka, offering insights into the city's samurai past."
+    }
+  ],
+  "NGO": [
+    {
+      "Name": "Nagoya Castle",
+      "Category": "Historical Site",
+      "Location": "Naka Ward",
+      "Description": "A historic castle known for its golden shachihoko and extensive grounds."
+    },
+    {
+      "Name": "Atsuta Shrine",
+      "Category": "Cultural Site",
+      "Location": "Atsuta Ward",
+      "Description": "One of the most important Shinto shrines in Japan, housing sacred relics."
+    },
+    {
+      "Name": "Osu Shopping District",
+      "Category": "Shopping District",
+      "Location": "Naka Ward",
+      "Description": "A bustling shopping district in Nagoya, known for its traditional atmosphere and local food."
+    },
+    {
+      "Name": "Nagoya TV Tower",
+      "Category": "Landmark",
+      "Location": "Naka Ward",
+      "Description": "A landmark tower in Nagoya, offering panoramic views of the city."
+    },
+    {
+      "Name": "Nagoya City Science Museum",
+      "Category": "Museum",
+      "Location": "Naka Ward",
+      "Description": "A museum in Nagoya, featuring a planetarium and interactive exhibits."
+    },
+    {
+      "Name": "Port of Nagoya Public Aquarium",
+      "Category": "Aquarium",
+      "Location": "Minato Ward",
+      "Description": "An aquarium in Nagoya, known for its dolphin and sea lion shows."
+    }
+  ],
+  "CTS": [
+    {
+      "Name": "Sapporo Clock Tower",
+      "Category": "Historical Building",
+      "Location": "Chuo Ward",
+      "Description": "A symbol of Sapporo, known for its American-style architecture."
+    },
+    {
+      "Name": "Odori Park",
+      "Category": "Park",
+      "Location": "Chuo Ward",
+      "Description": "A large public park hosting major events like the Sapporo Snow Festival."
+    },
+    {
+      "Name": "Sapporo TV Tower",
+      "Category": "Landmark",
+      "Location": "Chuo Ward",
+      "Description": "A landmark tower in Sapporo, offering panoramic views of the city."
+    },
+    {
+      "Name": "Sapporo Beer Museum",
+      "Category": "Museum",
+      "Location": "Higashi Ward",
+      "Description": "A museum in Sapporo, featuring the history of Sapporo Beer and beer tasting."
+    },
+    {
+      "Name": "Sapporo Factory",
+      "Category": "Shopping Center",
+      "Location": "Chuo Ward",
+      "Description": "A large shopping and entertainment complex in Sapporo."
+    },
+    {
+      "Name": "Sapporo Hitsujigaoka Observation Hill",
+      "Category": "Natural Attraction",
+      "Location": "Toyohira Ward",
+      "Description": "A hill in Sapporo, known for its panoramic views of the city and statue of Dr. Clark."
+    }
+  ],
+  "KKJ": [
+    {
+      "Name": "Kokura Castle",
+      "Category": "Historical Site",
+      "Location": "Kokura",
+      "Description": "A historic castle in Kitakyushu with beautiful gardens and a museum."
+    },
+    {
+      "Name": "Mojiko Retro",
+      "Category": "Historical District",
+      "Location": "Mojiko",
+      "Description": "A nostalgic district in Kitakyushu, famous for its preserved Meiji and Taisho era buildings."
+    },
+    {
+      "Name": "Kawachi Fujien Wisteria Garden",
+      "Category": "Garden",
+      "Location": "Kitakyushu",
+      "Description": "A beautiful garden in Kitakyushu, known for its wisteria tunnels and seasonal flowers."
+    },
+    {
+      "Name": "Space World",
+      "Category": "Theme Park",
+      "Location": "Kitakyushu",
+      "Description": "A major theme park in Kitakyushu, offering a range of attractions and roller coasters."
+    },
+    {
+      "Name": "Kokura Castle Garden",
+      "Category": "Garden",
+      "Location": "Kokura",
+      "Description": "A beautiful garden in Kitakyushu, known for its cherry blossoms in spring."
+    },
+    {
+      "Name": "Kokura Castle Museum of History",
+      "Category": "Museum",
+      "Location": "Kokura",
+      "Description": "A museum in Kitakyushu, featuring the history of Kokura Castle and samurai culture."
+    }
+  ],
+  "TAK": [
+    {
+      "Name": "Ritsurin Garden",
+      "Category": "Garden",
+      "Location": "Takamatsu",
+      "Description": "A scenic garden in Takamatsu, known for its beautiful landscapes and historical tea houses."
+    },
+    {
+      "Name": "Kawaramachi Street",
+      "Category": "Shopping Street",
+      "Location": "Kawaramachi",
+      "Description": "A vibrant shopping street in Takamatsu offering a range of shops and local eateries."
+    },
+    {
+      "Name": "Takamatsu Castle",
+      "Category": "Historical Site",
+      "Location": "Takamatsu",
+      "Description": "A castle in Takamatsu, known for its black exterior and beautiful gardens."
+    },
+    {
+      "Name": "Takamatsu Marugamemachi Shopping Street",
+      "Category": "Shopping Street",
+      "Location": "Takamatsu",
+      "Description": "A bustling shopping street in Takamatsu, known for its traditional atmosphere and local food."
+    },
+    {
+      "Name": "Takamatsu Symbol Tower",
+      "Category": "Landmark",
+      "Location": "Takamatsu",
+      "Description": "A landmark tower in Takamatsu, offering panoramic views of the city."
+    },
+    {
+      "Name": "Takamatsu City Museum of Art",
+      "Category": "Museum",
+      "Location": "Takamatsu",
+      "Description": "A museum in Takamatsu, featuring a large collection of Japanese art and artifacts."
+    }
+  ],
+  "KMJ": [
+    {
+      "Name": "Kumamoto Castle",
+      "Category": "Historical Site",
+      "Location": "Kumamoto",
+      "Description": "One of Japan's most famous castles, known for its impressive stone walls and samurai history."
+    },
+    {
+      "Name": "Suizenji Jojuen Garden",
+      "Category": "Garden",
+      "Location": "Suizenji",
+      "Description": "A traditional Japanese garden in Kumamoto, famous for its miniature recreations of iconic landscapes."
+    }
+  ],
+  "MYJ": [
+    {
+      "Name": "Dogo Onsen",
+      "Category": "Hot Spring",
+      "Location": "Matsuyama",
+      "Description": "Japan's oldest hot spring bathhouse, offering a unique experience in Matsuyama."
+    },
+    {
+      "Name": "Matsuyama Castle",
+      "Category": "Historical Site",
+      "Location": "Matsuyama",
+      "Description": "An important cultural property of Japan, offering panoramic views of the city from its hilltop location."
+    }
+  ],
+  "OKA": [
+    {
+      "Name": "Shurijo Castle",
+      "Category": "Historical Site",
+      "Location": "Naha",
+      "Description": "A reconstructed Ryukyuan gusuku (castle), symbolizing the history and culture of Okinawa."
+    },
+    {
+      "Name": "Kokusai Street",
+      "Category": "Shopping Street",
+      "Location": "Naha",
+      "Description": "A bustling street in Naha, Okinawa, known for its shops, restaurants, and cultural experiences."
+    },
+    {
+      "Name": "Okinawa Churaumi Aquarium",
+      "Category": "Aquarium",
+      "Location": "Motobu",
+      "Description": "One of the largest aquariums in the world, featuring whale sharks and manta rays."
+    },
+    {
+      "Name": "Shikinaen Garden",
+      "Category": "Garden",
+      "Location": "Naha",
+      "Description": "A beautiful garden in Naha, Okinawa, known for its traditional architecture and landscapes."
+    },
+    {
+      "Name": "Okinawa World",
+      "Category": "Theme Park",
+      "Location": "Nanjo",
+      "Description": "A theme park in Nanjo, Okinawa, featuring a cave and cultural experiences."
+    },
+    {
+      "Name": "Okinawa Prefectural Museum and Art Museum",
+      "Category": "Museum",
+      "Location": "Naha",
+      "Description": "A museum in Naha, Okinawa, featuring the history and culture of Okinawa."
+    }
+  ],
+  "SDJ": [
+    {
+      "Name": "Sendai Station",
+      "Category": "Transport Hub",
+      "Location": "Sendai",
+      "Description": "A major railway station in Sendai, connecting various parts of the city and region."
+    },
+    {
+      "Name": "Aoba Castle Ruins",
+      "Category": "Historical Site",
+      "Location": "Sendai",
+      "Description": "Historical ruins in Sendai offering insights into the city's samurai past."
+    }
+  ],
+  "NGS": [
+    {
+      "Name": "Mount Inasa",
+      "Category": "Natural Attraction",
+      "Location": "Nagasaki",
+      "Description": "A hill in Nagasaki known for its spectacular night views of the city."
+    },
+    {
+      "Name": "Nagasaki Peace Park",
+      "Category": "Memorial Park",
+      "Location": "Nagasaki",
+      "Description": "A park commemorating the atomic bombing of Nagasaki, promoting peace and reflection."
+    },
+    {
+      "Name": "Glover Garden",
+      "Category": "Garden",
+      "Location": "Nagasaki",
+      "Description": "A hillside park in Nagasaki, known for its Western-style mansions and views of the city."
+    },
+    {
+      "Name": "Nagasaki Atomic Bomb Museum",
+      "Category": "Museum",
+      "Location": "Nagasaki",
+      "Description": "A museum in Nagasaki, featuring the history of the atomic bombing of Nagasaki."
+    },
+    {
+      "Name": "Nagasaki Peace Memorial Hall for the Atomic Bomb Victims",
+      "Category": "Memorial",
+      "Location": "Nagasaki",
+      "Description": "A memorial hall in Nagasaki, offering a place for reflection and learning about the atomic bombing of Nagasaki."
+    },
+    {
+      "Name": "Nagasaki National Peace Memorial Hall for the Atomic Bomb Victims",
+      "Category": "Memorial",
+      "Location": "Nagasaki",
+      "Description": "A memorial hall in Nagasaki, offering a place for reflection and learning about the atomic bombing of Nagasaki."
+    }
+  ],
+  "TOY": [
+    {
+      "Name": "Toyama Castle",
+      "Category": "Historical Site",
+      "Location": "Toyama",
+      "Description": "A castle in Toyama city, featuring a museum and picturesque castle grounds."
+    },
+    {
+      "Name": "Kansui Park",
+      "Category": "Park",
+      "Location": "Toyama",
+      "Description": "A beautiful park surrounding a lake, known for its relaxing atmosphere and coffee shops."
+    }
+  ],
+  "HIJ": [
+    {
+      "Name": "Hiroshima Peace Memorial",
+      "Category": "Memorial",
+      "Location": "Hiroshima",
+      "Description": "A memorial park in Hiroshima dedicated to the victims of the atomic bomb in 1945."
+    },
+    {
+      "Name": "Shukkeien Garden",
+      "Category": "Garden",
+      "Location": "Hiroshima",
+      "Description": "A historic Japanese garden in Hiroshima, known for its beautiful landscapes and tea ceremony rooms."
+    }
+  ],
+  "HSG": [
+    {
+      "Name": "Saga Castle",
+      "Category": "Historical Site",
+      "Location": "Saga",
+      "Description": "A historical castle in Saga, known for its unique wooden reconstruction."
+    },
+    {
+      "Name": "Yoshinogari Historical Park",
+      "Category": "Archaeological Site",
+      "Location": "Yoshinogari",
+      "Description": "An archaeological park in Saga, featuring reconstructed Yayoi period buildings."
+    }
+  ],
+  "FSZ": [
+    {
+      "Name": "S-Pulse Dream Plaza",
+      "Category": "Shopping and Entertainment",
+      "Location": "Shizuoka",
+      "Description": "A large entertainment complex in Shizuoka with shops, restaurants, and a Ferris wheel."
+    },
+    {
+      "Name": "Sunpu Castle",
+      "Category": "Historical Site",
+      "Location": "Shizuoka",
+      "Description": "A historic castle in Shizuoka, offering a glimpse into the region's samurai past."
+    },
+    {
+      "Name": "Miho no Matsubara",
+      "Category": "Natural Attraction",
+      "Location": "Shizuoka",
+      "Description": "A scenic pine grove in Shizuoka, known for its views of Mount Fuji."
+    }
+  ],
+  "KOJ": [
+    {
+      "Name": "Sengan-en Garden",
+      "Category": "Garden",
+      "Location": "Kagoshima",
+      "Description": "A beautiful Japanese garden in Kagoshima, known for its views of Sakurajima."
+    },
+    {
+      "Name": "Sakurajima",
+      "Category": "Natural Attraction",
+      "Location": "Kagoshima",
+      "Description": "An active volcano in Kagoshima, offering hiking trails and hot springs."
+    }
+  ],
+  "KIJ": [
+    {
+      "Name": "Hirosaki Castle",
+      "Category": "Historical Site",
+      "Location": "Hirosaki",
+      "Description": "A historic castle in Hirosaki, known for its cherry blossoms in spring."
+    },
+    {
+      "Name": "Yahiko Shrine",
+      "Category": "Cultural Site",
+      "Location": "Yahiko",
+      "Description": "A Shinto shrine in Yahiko, known for its beautiful architecture and surrounding nature."
+    },
+    {
+      "Name": "Hirosaki Park",
+      "Category": "Park",
+      "Location": "Hirosaki",
+      "Description": "A spacious park in Hirosaki, known for its cherry blossoms in spring."
+    }
+  ],
+  "OIT": [
+    {
+      "Name": "Bepu Onsen",
+      "Category": "Hot Spring",
+      "Location": "Beppu",
+      "Description": "A famous hot spring resort in Beppu, known for its unique hot spring baths."
+    },
+    {
+      "Name": "Beppu Tower",
+      "Category": "Landmark",
+      "Location": "Beppu",
+      "Description": "A landmark tower in Beppu, offering panoramic views of the city and surrounding nature."
+    }
+  ],
+  "OKJ": [
+    {
+      "Name": "Korakuen Garden",
+      "Category": "Garden",
+      "Location": "Okayama",
+      "Description": "One of Japan's three most beautiful gardens, known for its landscapes and seasonal flowers."
+    },
+    {
+      "Name": "Okayama Castle",
+      "Category": "Historical Site",
+      "Location": "Okayama",
+      "Description": "A castle in Okayama, known for its black exterior and beautiful gardens."
+    }
+  ],
+  "KMI": [
+    {
+      "Name": "Aoshima Island",
+      "Category": "Natural Attraction",
+      "Location": "Miyazaki",
+      "Description": "A small island in Miyazaki, known for its unique rock formations and subtropical plants."
+    },
+    {
+      "Name": "Udo Shrine",
+      "Category": "Cultural Site",
+      "Location": "Miyazaki",
+      "Description": "A Shinto shrine in Miyazaki, known for its beautiful ocean views and unique architecture."
+    }
+  ],
+  "YGJ": [
+    {
+      "Name": "Kinosaki Onsen",
+      "Category": "Hot Spring",
+      "Location": "Toyooka",
+      "Description": "A famous hot spring resort in Toyooka, known for its traditional atmosphere and public bathhouses."
+    },
+    {
+      "Name": "Kinosaki Marine World",
+      "Category": "Aquarium",
+      "Location": "Toyooka",
+      "Description": "An aquarium in Toyooka, known for its dolphin and sea lion shows."
+    },
+    {
+      "Name": "Yonago Castle Ruins",
+      "Category": "Historical Site",
+      "Location": "Yonago",
+      "Description": "Historical ruins in Yonago, offering insights into the city's samurai past."
+    }
+  ],
+  "KMQ": [
+    {
+      "Name": "Kenrokuen Garden",
+      "Category": "Garden",
+      "Location": "Kanazawa",
+      "Description": "One of Japan's three most beautiful gardens, known for its landscapes and seasonal flowers."
+    },
+    {
+      "Name": "Kanazawa Castle",
+      "Category": "Historical Site",
+      "Location": "Kanazawa",
+      "Description": "A castle in Kanazawa, known for its black exterior and beautiful gardens."
+    },
+    {
+      "Name": "21st Century Museum of Contemporary Art",
+      "Category": "Museum",
+      "Location": "Kanazawa",
+      "Description": "A museum in Kanazawa, featuring modern and contemporary art."
+    },
+    {
+      "Name": "Natadera Temple",
+      "Category": "Historical Site",
+      "Location": "Komatsu",
+      "Description": "A Buddhist temple in Komatsu, known for its beautiful gardens and autumn leaves."
+    }
+  ]
+}

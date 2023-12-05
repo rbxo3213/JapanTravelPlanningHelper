@@ -5,40 +5,41 @@ from amadeus import Client, ResponseError
 from datetime import datetime
 import json
 import math
+from SelectionManager import SelectionManager
+import openai
 
 # Load API keys from the JSON file
-with open('API_key.json', 'r') as file:
+with open('JSON/API_key.json', 'r') as file:
     api_keys = json.load(file)
     API_KEY = api_keys['AMADEUS_API_KEY']
     API_SECRET = api_keys['AMADEUS_API_SECRET']
 
-# Load API keys from the JSON file
-with open('PRODUCT_key.json', 'r') as file:
-    api_keys = json.load(file)
-    PRODUCT_KEY = api_keys['PRODUCT_API_KEY']
-    PRODUCT_SECRET = api_keys['PRODUCT_API_SECRET']
-
 # Load airport data and regions data from JSON files
-with open('airports.json', 'r') as file:
+with open('JSON/airports.json', 'r') as file:
     airports_data = json.load(file)
     airports_korea = airports_data['Korea']
     airports_japan = airports_data['Japan']
 
-with open('transport_info.json', 'r') as file:
+with open('JSON/transport_info.json', 'r') as file:
     transport_data = json.load(file)
 
-with open('regions.json', 'r') as file:
+with open('JSON/regions.json', 'r') as file:
     regions_data = json.load(file)
     regions = regions_data
 
-with open('pois.json', 'r') as file:
+with open('JSON/pois.json', 'r') as file:
     pois_data = json.load(file)
     pois = pois_data
+
+# Load API keys from the JSON file
+with open('JSON/gpt_api.json', 'r') as file:
+    gpt_api = json.load(file)
+    GPT_API = gpt_api['GPT_API']
 
 # Initialize Amadeus client
 amadeus = Client(client_id=API_KEY, client_secret=API_SECRET)
 #product = Client(client_id=PRODUCT_KEY, client_secret=PRODUCT_SECRET)
-
+openai.api_key = "GPT_API"
 # Convert specific IATA codes to 'TYO' or 'OSA'
 def convert_iata_code(iata_code):
     if iata_code in ['HND', 'NRT']:
@@ -74,13 +75,53 @@ def wrap_text(text, length):
         return text[:length] + '\n' + text[length:]
     else:
         return text
-    
+
+def update_selection_window():
+    # 선택 정보 업데이트 창
+    selection_window = tk.Toplevel(root)
+    selection_window.title("Latest Selections")
+    selection_window.geometry("300x200")
+
+    # 최근 선택된 정보를 표시
+    if SelectionManager.selected_flight:
+        tk.Label(selection_window, text=f"Flight: {SelectionManager.selected_flight}").pack()
+    if SelectionManager.selected_hotel:
+        tk.Label(selection_window, text=f"Hotel: {SelectionManager.selected_hotel}").pack()
+    if SelectionManager.selected_poi:
+        tk.Label(selection_window, text=f"POI: {SelectionManager.selected_poi}").pack()
+    if SelectionManager.selected_transport:
+        tk.Label(selection_window, text=f"Transport: {SelectionManager.selected_transport}").pack()
+
+def handle_flight_click(flight_offer):
+    # Assuming flight_offer is a dictionary with the required information
+    flight_details = {
+        'destination': flight_offer['itineraries'][0]['segments'][-1]['arrival']['iataCode'],
+        'departure_time': flight_offer['itineraries'][0]['segments'][0]['departure']['at'].split('T')[0],
+        'arrival_time': flight_offer['itineraries'][1]['segments'][-1]['arrival']['at'].split('T')[0],
+        'price': convert_price(flight_offer['price']['total'])
+    }
+    selection_manager.update_flight(flight_details)
+
+opened_windows = []
+
+def handle_hotel_click(hotel_offer):
+    hotel_details = f"Hotel: {hotel_offer['hotel']['name']}, " \
+                    f"Price: {convert_price_from_jpy_to_krw(hotel_offer['offers'][0]['price']['total'])} KRW"
+    selection_manager.update_hotel(hotel_details)
+
+def handle_poi_click(poi):
+    poi_details = f"POI: {poi['Name']} - {poi['Category']} ({poi['Location']})"
+    selection_manager.add_poi(poi_details)
+
+def handle_transport_click(pass_name=None, duration=None):
+    selection_manager.update_transport(pass_name=pass_name, duration=duration)
 
 # Display flight details in a new window
 def display_flight_details(flight_data):
     new_window = tk.Toplevel(root)
+    opened_windows.append(new_window)
     new_window.title("Flight Details")
-    new_window.geometry("960x280+700+10")
+    new_window.geometry("1020x280+550+10")
 
     canvas = tk.Canvas(new_window)
     scrollbar = ttk.Scrollbar(new_window, orient="vertical", command=canvas.yview)
@@ -90,6 +131,10 @@ def display_flight_details(flight_data):
     canvas.bind('<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
     canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
 
+    if not flight_data:
+        label = ttk.Label(scrollable_frame, text="Not found available Flight", font=('Gothic', 16))
+        label.pack(side='top', fill='x', pady=20)
+        return
     # Add the scrollbar to the canvas
     scrollbar.pack(side="right", fill="y")
     # Bind the mousewheel scrolling to the scrollbar
@@ -98,6 +143,8 @@ def display_flight_details(flight_data):
     for offer in flight_data:
         round_trip_frame = ttk.Frame(scrollable_frame, padding=10, borderwidth=2, relief="groove")
         round_trip_frame.pack(fill='x', expand=True, pady=10)
+        select_button = tk.Button(round_trip_frame, text="Select", command=lambda offer=offer: handle_flight_click(offer))
+        select_button.pack(side='right')
         for i, itinerary in enumerate(offer['itineraries']):
             flight_info = f"Flight {i+1} - Departure: {itinerary['segments'][0]['departure']['iataCode']} {itinerary['segments'][0]['departure']['at']}, " \
                           f"Arrival: {itinerary['segments'][-1]['arrival']['iataCode']} {itinerary['segments'][-1]['arrival']['at']}, " \
@@ -160,8 +207,9 @@ def fetch_hotel_list():
 
 def display_hotels(hotels, iata_code):
     new_window = tk.Toplevel(root)
+    opened_windows.append(new_window)
     new_window.title("Hotels List")
-    new_window.geometry("530x340+700+325")
+    new_window.geometry("580x340+550+325")
 
     # Main frame for list of hotels
     hotels_frame = ttk.Frame(new_window)
@@ -176,6 +224,11 @@ def display_hotels(hotels, iata_code):
     hotels_canvas.bind('<Configure>', lambda e: hotels_canvas.configure(scrollregion=hotels_canvas.bbox("all")))
     hotels_canvas_window = hotels_canvas.create_window((0, 0), window=hotels_scrollable_frame, anchor="nw")
 
+    if not hotels:
+        label = ttk.Label(hotels_frame, text="Not found available Hotel", font=('Gothic', 16))
+        label.pack(side='top', fill='x', pady=20)
+        return
+    
     for hotel in hotels:
         # 호텔 가격을 엔화에서 원화로 변환합니다.
         price_krw = convert_price_from_jpy_to_krw(hotel['offers'][0]['price']['total'])
@@ -188,6 +241,9 @@ def display_hotels(hotels, iata_code):
         
         hotel_price_label = ttk.Label(hotel_frame, text=f"Price: {price_krw} KRW", font=('Gothic', 12))
         hotel_price_label.pack(side='left', fill='x', expand=True)
+
+        select_button = tk.Button(hotel_frame, text="Select", command=lambda hotel=hotel: handle_hotel_click(hotel))
+        select_button.pack(side='right')
 
     hotels_scrollbar.pack(side='right', fill='y')
     hotels_canvas.pack(side='left', fill='both', expand=True)
@@ -243,7 +299,7 @@ def sort_hotels(hotels, region_name, hotels_scrollable_frame, hotels_canvas, hot
     for widget in hotels_scrollable_frame.winfo_children():
         widget.destroy()
 
-    # Add sorted hotel frames back into the canvas with converted prices
+    # Add sorted hotel frames back into the canvas with converted prices and 'Select' buttons
     for hotel in sorted_hotels:
         price_krw = convert_price_from_jpy_to_krw(hotel['offers'][0]['price']['total'])
 
@@ -255,14 +311,18 @@ def sort_hotels(hotels, region_name, hotels_scrollable_frame, hotels_canvas, hot
         
         hotel_price_label = ttk.Label(hotel_frame, text=f"Price: {price_krw} KRW", font=('Gothic', 12))
         hotel_price_label.pack(side='left', fill='x', expand=True)
+        
+        # Add the 'Select' button for each sorted hotel
+        select_button = tk.Button(hotel_frame, text="Select", command=lambda hotel=hotel: handle_hotel_click(hotel))
+        select_button.pack(side='right')
 
     # Update the scroll region of the canvas
     hotels_canvas.configure(scrollregion=hotels_canvas.bbox("all"))
 
 def fetch_pois(destination_city):
     # Extract the IATA code from the city name (assuming the format "City(IATA)")
-    destination_code = destination_city[destination_city.find("(")+1:destination_city.find(")")]
-    iata_code = convert_iata_code(destination_code)
+    destination_city = destination_var.get()
+    iata_code = convert_iata_code(next((code for code, city in airports_japan.items() if city == destination_city), None))
 
     pois_for_destination = pois.get(iata_code, [])
     display_pois(pois_for_destination, iata_code)
@@ -270,8 +330,9 @@ def fetch_pois(destination_city):
 
 def display_pois(pois_data, iata_code):
     new_window = tk.Toplevel(root)
+    opened_windows.append(new_window)
     new_window.title(f"Points of Interest in {iata_code}")
-    new_window.geometry("440x330+1240+325")
+    new_window.geometry("600x340+1140+325")
 
     pois_canvas = tk.Canvas(new_window)
     pois_scrollbar = ttk.Scrollbar(new_window, orient="vertical", command=pois_canvas.yview)
@@ -299,6 +360,9 @@ def display_pois(pois_data, iata_code):
         poi_location_label = ttk.Label(poi_frame, text=f"Location: {poi['Location']}", font=('Gothic', 12))
         poi_location_label.pack(side='top', fill='x', expand=True)
 
+        select_button = tk.Button(poi_frame, text="Select", command=lambda poi=poi: handle_poi_click(poi))
+        select_button.pack(side='right')
+
         # Wrap the text for descriptions longer than 35 characters
         wrapped_description = wrap_text(poi['Description'], 35)
         poi_description_label = ttk.Label(poi_frame, text=f"Description: {wrapped_description}", font=('Gothic', 12))
@@ -321,8 +385,9 @@ def display_transport_info(destination_code):
 def display_transport_details(transport_info):
     # Create a new window to display transport details
     transport_window = tk.Toplevel(root)
+    opened_windows.append(transport_window)
     transport_window.title("Transport Information")
-    transport_window.geometry("+700+710")
+    transport_window.geometry("+550+700")
     
     # Grid configuration for uniform button sizes
     for idx in range(1, 5):
@@ -339,21 +404,21 @@ def display_transport_details(transport_info):
 
     # Create buttons for each Pass Name
     pass_names = transport_info['PassName']  # Assuming this is now a list
-    for idx, name in enumerate(pass_names):
-        btn = ttk.Button(info_frame, text=name, command=lambda n=name: messagebox.showinfo("Selection", f"Selected PassName: {n}"))
+    # PassName 버튼 생성
+    for idx, name in enumerate(transport_info['PassName']):
+        btn = ttk.Button(info_frame, text=name, command=lambda n=name: handle_transport_click(pass_name=n))
         btn.grid(row=0, column=idx + 1, sticky="ew", padx=5, pady=5)
 
     # Coverage information
     coverage_label = tk.Label(info_frame, text=transport_info['Coverage'], font=('Gothic', 12))
     coverage_label.grid(row=1, column=1, columnspan=len(pass_names), sticky="ew")
 
-    # Create buttons for each Duration Option
+    # Duration 버튼 생성
     duration_frame = ttk.Frame(info_frame)
-    duration_frame.grid(row=2, column=1, columnspan=len(pass_names), sticky="ew")
+    duration_frame.grid(row=2, column=1, columnspan=4, sticky="ew")
     for idx, duration in enumerate(transport_info['DurationOptions']):
-        btn = ttk.Button(duration_frame, text=duration, command=lambda d=duration: messagebox.showinfo("Selection", f"Selected Duration Option: {d}"))
+        btn = ttk.Button(duration_frame, text=duration, command=lambda d=duration: handle_transport_click(duration=d))
         btn.pack(side='left', fill='x', expand=True, padx=5, pady=5)
-
     # Notes information
     notes_label = tk.Label(info_frame, text=transport_info['Notes'], font=('Gothic', 12))
     notes_label.grid(row=3, column=1, columnspan=len(pass_names), sticky="ew")
@@ -362,6 +427,12 @@ def display_transport_details(transport_info):
     transport_window.update_idletasks()
     transport_window.geometry(f"{transport_window.winfo_reqwidth()}x{transport_window.winfo_reqheight()}")
 
+# 모든 창을 닫는 함수
+def close_all_windows():
+    for window in opened_windows:
+        window.destroy()
+    opened_windows.clear()
+    selection_manager.reset_selections()
 
 # Initialize the main GUI window
 root = tk.Tk()
@@ -371,6 +442,22 @@ root.title("JTPH (Japan Travel Planning Helper)")
 origin_var = tk.StringVar(value='Seoul(ICN)')  # Default value
 destination_var = tk.StringVar(value='Tokyo(HND)')  # Default value
 adults_var = tk.IntVar(value=1)  # Default value
+
+departure_calendar = Calendar(root, selectmode='day')
+departure_calendar.grid(row=2, column=1, padx=5, pady=5)
+tk.Label(root, text="Departure Date:").grid(row=2, column=0, sticky='e')
+
+return_calendar = Calendar(root, selectmode='day')
+return_calendar.grid(row=3, column=1, padx=5, pady=5)
+tk.Label(root, text="Return Date:").grid(row=3, column=0, sticky='e')
+
+# 변수를 SelectionManager 클래스에 전달
+selection_manager = SelectionManager(root, origin_var, destination_var, adults_var, departure_calendar, return_calendar, GPT_API)
+
+# Create widgets for the GUI
+tk.Label(root, text="Origin:").grid(row=0, column=0, sticky='e')
+origin_combobox = ttk.Combobox(root, textvariable=origin_var, values=list(airports_korea.values()))
+origin_combobox.grid(row=0, column=1, padx=5, pady=5)
 
 # Create widgets for the GUI
 tk.Label(root, text="Origin:").grid(row=0, column=0, sticky='e')
@@ -393,12 +480,13 @@ tk.Label(root, text="Number of Adults:").grid(row=4, column=0, sticky='e')
 adults_spinbox = ttk.Spinbox(root, from_=1, to=10, textvariable=adults_var)
 adults_spinbox.grid(row=4, column=1, padx=5, pady=5)
 
-search_button = tk.Button(root, text="Search", command=lambda: [search_flights(), fetch_hotel_list(), fetch_pois(), display_transport_info(destination_var.get())])
-search_button.grid(row=5, column=0, columnspan=2, padx=5, pady=5)
-
 # Connect the display_transport_info to the button's command in the GUI
 search_button = tk.Button(root, text="Search", command=lambda: [search_flights(), fetch_hotel_list(), fetch_pois(destination_var.get()), display_transport_info(destination_var.get())])
 search_button.grid(row=5, column=0, columnspan=2, padx=5, pady=5)
+
+# 모든 창을 닫는 버튼 추가
+close_all_btn = tk.Button(root, text="Close All Windows", command=close_all_windows)
+close_all_btn.grid(row=10, column=0, columnspan=2, pady=5)
 
 # Start the main loop
 root.mainloop()
