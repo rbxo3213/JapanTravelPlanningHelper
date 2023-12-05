@@ -35,8 +35,8 @@ Replicate the repository and make sure Python 3.x is installed. Go to the projec
 pip install -r requirements.txt
 ```
 
-- **It's important** And please make and add your Amadeus API key, OpenAI API key json file named, "API_key.json", "gpt_api.json" in JSON folder
-- 
+- **It's important** And please make and add your Amadeus API key, OpenAI API key json file named, "API_key.json", "gpt_api.json" in JSON folder 
+
 1. **Start the program**:
 
 ```bash
