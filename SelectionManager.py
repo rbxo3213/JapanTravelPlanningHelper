@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-import openai
 
 class SelectionManager:
     def __init__(self, root, origin_var, destination_var, adults_var, departure_calendar, return_calendar, gpt_api_key):
@@ -18,11 +17,11 @@ class SelectionManager:
         self.departure_calendar = departure_calendar
         self.return_calendar = return_calendar
 
-        # 선택 항목을 표시할 프레임 생성
+        # Create a frame to display the selection
         self.selection_frame = ttk.LabelFrame(root, text="Current Selections", padding=(20, 10))
         self.selection_frame.grid(row=6, column=0, columnspan=2, sticky="ew")
 
-        # 선택 항목을 표시할 레이블 생성
+        # Create a label to display your selection
         self.flight_label = ttk.Label(self.selection_frame, text="")
         self.flight_label.pack()
 
@@ -32,15 +31,15 @@ class SelectionManager:
         self.pois_label = ttk.Label(self.selection_frame, text="")
         self.pois_label.pack()
 
-        # Transport 레이블을 생성하고 설정합니다.
+        # Create and set a Transport label.
         self.transport_label = ttk.Label(self.selection_frame, text="")
         self.transport_label.pack()
 
-        # 리셋 버튼 생성
+        # Create a reset button
         self.reset_button = ttk.Button(self.selection_frame, text="Reset", command=self.reset_selections)
         self.reset_button.pack()
 
-        # OK 버튼 생성 및 command 설정 변경
+        # Create OK button and change command settings
         self.ok_button = ttk.Button(self.selection_frame, text="Make Plan", command=self.confirm_and_generate_plan)
         self.ok_button.pack()
 
@@ -69,10 +68,10 @@ class SelectionManager:
 
     def update_transport(self, pass_name=None, duration=None):
         if pass_name:
-            self.selected_pass_names = [pass_name]  # 현재 pass_name으로 리스트를 대체
+            self.selected_pass_names = [pass_name]  # Replace list with current pass_name
         if duration:
-            self.selected_durations = [duration]  # 현재 duration으로 리스트를 대체
-        # PassName과 Duration을 함께 출력
+            self.selected_durations = [duration]  # Replace list with current duration
+        # Print PassName and Duration together
         self.transport_label.config(text=f"PassName: {', '.join(self.selected_pass_names)}, Duration: {', '.join(self.selected_durations)}")
 
 
@@ -87,8 +86,8 @@ class SelectionManager:
         self.transport_label.config(text="")
 
     def confirm_selections(self):
-        # 선택 확인 로직
-        # 예를 들어, 선택 사항을 파일로 저장하거나 다른 프로세스에 전달할 수 있습니다.
+        # Selection confirmation logic
+        # For example, you can save your selections to a file or pass them to another process.
         print(f"Confirmed selections: {self.selected_flight}, {self.selected_hotel}, {self.selected_pois}, {self.selected_transport}")
 
     def generate_travel_plan(self):
@@ -126,7 +125,7 @@ class SelectionManager:
 
 
     def get_selections(self):
-        # 사용자가 선택한 모든 정보를 반환
+        # Returns all information selected by the user
         return {
             'flight': self.selected_flight,
             'hotel': self.selected_hotel,

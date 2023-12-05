@@ -7,32 +7,48 @@ import json
 import math
 from SelectionManager import SelectionManager
 import openai
+import os
+import sys
+import json
+
+if getattr(sys, 'frozen', False):
+    application_path = sys._MEIPASS
+else:
+    application_path = os.path.dirname(os.path.abspath(__file__))
+
+# application_path
+api_key_path = os.path.join(application_path, 'JSON', 'API_key.json')
+airports_path = os.path.join(application_path, 'JSON', 'airports.json')
+transport_path = os.path.join(application_path, 'JSON', 'transport_info.json')
+regions_path = os.path.join(application_path, 'JSON', 'regions.json')
+pois_path = os.path.join(application_path, 'JSON', 'pois.json')
+gpt_api_path = os.path.join(application_path, 'JSON', 'gpt_api.json')
 
 # Load API keys from the JSON file
-with open('JSON/API_key.json', 'r') as file:
+with open(api_key_path, 'r') as file:
     api_keys = json.load(file)
     API_KEY = api_keys['AMADEUS_API_KEY']
     API_SECRET = api_keys['AMADEUS_API_SECRET']
 
 # Load airport data and regions data from JSON files
-with open('JSON/airports.json', 'r') as file:
+with open(airports_path, 'r') as file:
     airports_data = json.load(file)
     airports_korea = airports_data['Korea']
     airports_japan = airports_data['Japan']
 
-with open('JSON/transport_info.json', 'r') as file:
+with open(transport_path, 'r') as file:
     transport_data = json.load(file)
 
-with open('JSON/regions.json', 'r') as file:
+with open(regions_path, 'r') as file:
     regions_data = json.load(file)
     regions = regions_data
 
-with open('JSON/pois.json', 'r') as file:
+with open(pois_path, 'r') as file:
     pois_data = json.load(file)
     pois = pois_data
 
 # Load API keys from the JSON file
-with open('JSON/gpt_api.json', 'r') as file:
+with open(gpt_api_path, 'r') as file:
     gpt_api = json.load(file)
     GPT_API = gpt_api['GPT_API']
 
@@ -77,12 +93,12 @@ def wrap_text(text, length):
         return text
 
 def update_selection_window():
-    # 선택 정보 업데이트 창
+    # Update Selection Information Window
     selection_window = tk.Toplevel(root)
     selection_window.title("Latest Selections")
     selection_window.geometry("300x200")
 
-    # 최근 선택된 정보를 표시
+    # Displays recently selected information
     if SelectionManager.selected_flight:
         tk.Label(selection_window, text=f"Flight: {SelectionManager.selected_flight}").pack()
     if SelectionManager.selected_hotel:
@@ -230,7 +246,7 @@ def display_hotels(hotels, iata_code):
         return
     
     for hotel in hotels:
-        # 호텔 가격을 엔화에서 원화로 변환합니다.
+        # Convert hotel prices from Yen to Korean Won.
         price_krw = convert_price_from_jpy_to_krw(hotel['offers'][0]['price']['total'])
 
         hotel_frame = ttk.Frame(hotels_scrollable_frame, padding=10, borderwidth=2, relief="groove")
@@ -404,7 +420,7 @@ def display_transport_details(transport_info):
 
     # Create buttons for each Pass Name
     pass_names = transport_info['PassName']  # Assuming this is now a list
-    # PassName 버튼 생성
+    # Create PassName Button
     for idx, name in enumerate(transport_info['PassName']):
         btn = ttk.Button(info_frame, text=name, command=lambda n=name: handle_transport_click(pass_name=n))
         btn.grid(row=0, column=idx + 1, sticky="ew", padx=5, pady=5)
@@ -413,7 +429,7 @@ def display_transport_details(transport_info):
     coverage_label = tk.Label(info_frame, text=transport_info['Coverage'], font=('Gothic', 12))
     coverage_label.grid(row=1, column=1, columnspan=len(pass_names), sticky="ew")
 
-    # Duration 버튼 생성
+    # Create Duration button
     duration_frame = ttk.Frame(info_frame)
     duration_frame.grid(row=2, column=1, columnspan=4, sticky="ew")
     for idx, duration in enumerate(transport_info['DurationOptions']):
@@ -450,7 +466,7 @@ return_calendar = Calendar(root, selectmode='day')
 return_calendar.grid(row=3, column=1, padx=5, pady=5)
 tk.Label(root, text="Return Date:").grid(row=3, column=0, sticky='e')
 
-# 변수를 SelectionManager 클래스에 전달
+# Pass variable to SelectionManager class
 selection_manager = SelectionManager(root, origin_var, destination_var, adults_var, departure_calendar, return_calendar, GPT_API)
 
 # Create widgets for the GUI
@@ -483,7 +499,7 @@ adults_spinbox.grid(row=4, column=1, padx=5, pady=5)
 search_button = tk.Button(root, text="Search", command=lambda: [search_flights(), fetch_hotel_list(), fetch_pois(destination_var.get()), display_transport_info(destination_var.get())])
 search_button.grid(row=5, column=0, columnspan=2, padx=5, pady=5)
 
-# 모든 창을 닫는 버튼 추가
+# Add button to close all windows
 close_all_btn = tk.Button(root, text="Close All Windows", command=close_all_windows)
 close_all_btn.grid(row=10, column=0, columnspan=2, pady=5)
 
