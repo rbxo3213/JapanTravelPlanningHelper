@@ -3,7 +3,7 @@ from amadeus import Client, ResponseError
 import json
 
 # Load API keys from the JSON file
-with open('API_key.json', 'r') as file:
+with open('JSON/API_key.json', 'r') as file:
     api_keys = json.load(file)
     API_KEY = api_keys['AMADEUS_API_KEY']
     API_SECRET = api_keys['AMADEUS_API_SECRET']

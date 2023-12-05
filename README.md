@@ -1,43 +1,42 @@
 
 # JTPH - Japan Travel Planning Helper
 
-The JTPH (Japan Travel Planning Helper) is a Python-based tool developed by a student for educational purposes. It is designed to assist in planning travels to Japan by providing essential information about various destinations, including airports, hotels, points of interest, and transportation options.
+JTPH is a comprehensive travel planning application specifically tailored for journeys within Japan. It streamlines the process of finding flights, accommodations, and points of interest, simplifying travel logistics and itinerary planning.
 
 ## Features
 
-- **Airport Search**: Find airport details based on IATA codes using `iataSearcher.py`.
-- **Hotel Search**: Locate hotels in different regions with `HotelSearcher.py`.
-- **Region Information**: Access information about various regions in Japan from `regions.json`.
-- **Transportation Details**: Get details on transportation options from `transport_info.json`.
-- **Points of Interest**: Explore points of interest in Japanese destinations with `pois.json`.
+- **Flight and Accommodation Search**: Intuitive interfaces for selecting flights and hotels, with real-time pricing and availability.
+- **Point of Interest Discovery**: Explore various attractions and sights across Japan to add to your itinerary.
+- **Transport Information**: Detailed transport data to help you navigate between locations efficiently.
+- **Selection Management**: Seamlessly manage your selections across different categories with the `SelectionManager.py` module.
+- **IATA Code Search**: The `iataSearcher.py` tool provides IATA codes for cities beyond Japan, such as Shizuoka or Paris, catering to developers who wish to extend the program's capabilities.
 
-## Data Files
+## Installation & Setup
 
-The program utilizes several JSON files stored in the `JSON` directory, including `airports.json`, `pois.json`, `regions.json`, and `transport_info.json`.
+Clone the repository and ensure you have Python 3.x installed. Navigate to the project directory and install any necessary dependencies.
 
 ## Usage
 
-1. Clone or download the repository to your local machine.
-2. Ensure Python 3.x is installed on your system.
-3. Run the `JTPH.py` script:
+1. **Starting the Program**: Run `JTPH.py` to launch the application.
+2. **Choosing Flights & Hotels**: Use the GUI to select your preferred flights and accommodations.
+3. **Exploring Points of Interest**: Browse through the list of attractions and add them to your plan.
+4. **Reviewing Transport Options**: Check available transportation means for your travel dates and destinations.
+5. **Managing Selections**: The `SelectionManager.py` module will help you finalize your choices and suggest an itinerary using the OpenAI API.
 
-    ```bash
-    python JTPH.py
-    ```
+## Screenshots
 
-4. Follow the prompts to input your travel preferences and details.
+Below are examples of the JTPH interface in action:
 
-## Project Structure
+![Hotel Selection Interface](your-image-hosting-link-to-hotel-screenshot)
+![Flight Details Interface](your-image-hosting-link-to-flight-screenshot)
+![Main Search Interface](your-image-hosting-link-to-main-search-screenshot)
 
-- `JSON/`: Contains all the JSON data files.
-- `Searchers/`: Includes Python scripts for searching hotels and airports.
-- `JTPH.py`: The main script to start the program.
-- `SelectionManager.py`: Manages user selections within the program.
+## Additional Notes
 
-## Educational Purpose
+The `iataSearcher.py` is an auxiliary tool for those interested in adding functionality for international travel.
 
-This project is developed as part of my learning journey in Python programming. It is intended for educational use and personal project development.
+`SelectionManager.py` is crucial for interfacing with OpenAI's API to generate travel plans based on user selections.
 
 ## Support
 
-For any questions or support, please open an issue in the repository or contact me directly.
+Please open an issue in the repository for support or questions.
