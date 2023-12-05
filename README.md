@@ -41,7 +41,7 @@ pip install -r requirements.txt
 python JTPH.py
 ```
 
-    - Run the application by running 'JTPH.py '.
+- Run the application by running 'JTPH.py '.
 
 2. **Start screen**: - Select the departure point, destination, departure date, return date, and number of people and press the search button. The return selection window shows the selected airline, hotel, pois, and transportation information.
    <img width="252" alt="스크린샷 2023-12-05 173157" src="https://github.com/rbxo3213/JapanTravelPlanningHelper/assets/42289726/4348e458-525b-4653-85a4-7d6048c66855">
