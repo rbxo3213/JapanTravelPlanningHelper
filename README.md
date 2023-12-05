@@ -38,6 +38,7 @@ pip install -r requirements.txt
 - **It's important** And please make and add your Amadeus API key, OpenAI API key json file named, "API_key.json", "gpt_api.json" in JSON folder
 
 - **The easiest way**: Just download the attached exe file and run it!
+![icon1](https://github.com/rbxo3213/JapanTravelPlanningHelper/assets/42289726/a540f455-9364-446c-ad77-50c23d7cede4)
 
 1. **Start the program**:
 
