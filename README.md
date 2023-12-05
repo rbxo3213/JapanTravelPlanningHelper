@@ -1,48 +1,43 @@
-# JTPH Travel Helper
 
-JTPH Travel Helper is an innovative program designed to assist users in planning their travels efficiently. By integrating various data sources, such as airports, points of interest (POIs), regions, and transportation information, JTPH offers a comprehensive solution for travel planning and management.
+# JTPH - Japan Travel Planning Helper
+
+The JTPH (Japan Travel Planning Helper) is a Python-based tool developed by a student for educational purposes. It is designed to assist in planning travels to Japan by providing essential information about various destinations, including airports, hotels, points of interest, and transportation options.
 
 ## Features
 
-- **Airport Search**: Utilize `iataSearcher.py` to find airport details based on IATA codes.
-- **Hotel Search**: `HotelSearcher.py` helps users find hotels in their destination region.
-- **Region Information**: Access detailed information about different regions through `regions.json`.
-- **Transportation Details**: Use `transport_info.json` to understand transportation options in various locations.
-- **Points of Interest**: Discover points of interest in travel destinations with `pois.json`.
+- **Airport Search**: Find airport details based on IATA codes using `iataSearcher.py`.
+- **Hotel Search**: Locate hotels in different regions with `HotelSearcher.py`.
+- **Region Information**: Access information about various regions in Japan from `regions.json`.
+- **Transportation Details**: Get details on transportation options from `transport_info.json`.
+- **Points of Interest**: Explore points of interest in Japanese destinations with `pois.json`.
 
-## Installation
+## Data Files
 
-To run JTPH, ensure Python 3.x is installed. Clone the repository and navigate to the project directory.
-
-```bash
-git clone [your-repository-url]
-cd JTPH
-```
-
-Install required dependencies:
-
-```bash
-pip install -r requirements.txt
-```
+The program utilizes several JSON files stored in the `JSON` directory, including `airports.json`, `pois.json`, `regions.json`, and `transport_info.json`.
 
 ## Usage
 
-To start using JTPH, run the `JTPH.py` script:
+1. Clone or download the repository to your local machine.
+2. Ensure Python 3.x is installed on your system.
+3. Run the `JTPH.py` script:
 
-```bash
-python JTPH.py
-```
+    ```bash
+    python JTPH.py
+    ```
 
-Follow the on-screen prompts to enter your travel details and preferences.
+4. Follow the prompts to input your travel preferences and details.
 
-## Contributing
+## Project Structure
 
-Contributions to JTPH are welcome. Please read `CONTRIBUTING.md` for guidelines on how to submit contributions.
+- `JSON/`: Contains all the JSON data files.
+- `Searchers/`: Includes Python scripts for searching hotels and airports.
+- `JTPH.py`: The main script to start the program.
+- `SelectionManager.py`: Manages user selections within the program.
 
-## License
+## Educational Purpose
 
-This project is licensed under the MIT License - see the `LICENSE.md` file for details.
+This project is developed as part of my learning journey in Python programming. It is intended for educational use and personal project development.
 
 ## Support
 
-For support and queries, join our community on [Discord](your-discord-link) or raise an issue in the GitHub repository.
+For any questions or support, please open an issue in the repository or contact me directly.
