@@ -11,6 +11,7 @@ import os
 import sys
 import json
 
+
 if getattr(sys, 'frozen', False):
     application_path = sys._MEIPASS
 else:
@@ -55,7 +56,7 @@ with open(gpt_api_path, 'r') as file:
 # Initialize Amadeus client
 amadeus = Client(client_id=API_KEY, client_secret=API_SECRET)
 #product = Client(client_id=PRODUCT_KEY, client_secret=PRODUCT_SECRET)
-openai.api_key = "GPT_API"
+openai.api_key = GPT_API
 # Convert specific IATA codes to 'TYO' or 'OSA'
 def convert_iata_code(iata_code):
     if iata_code in ['HND', 'NRT']:
@@ -183,8 +184,10 @@ def search_flights():
 
     origin_code = next((code for code, city in airports_korea.items() if city == origin_city), None)
     destination_code = next((code for code, city in airports_japan.items() if city == destination_city), None)
-    departure_date = datetime.strptime(departure_calendar.get_date(), '%y. %m. %d.').strftime('%Y-%m-%d')
-    return_date = datetime.strptime(return_calendar.get_date(), '%y. %m. %d.').strftime('%Y-%m-%d')
+    departure_date = datetime.strptime(departure_calendar.get_date(), '%m/%d/%y').strftime('%Y-%m-%d')
+    return_date = datetime.strptime(return_calendar.get_date(), '%m/%d/%y').strftime('%Y-%m-%d')
+
+
 
     try:
         response = amadeus.shopping.flight_offers_search.get(
@@ -203,8 +206,9 @@ def fetch_hotel_list():
     destination_city = destination_var.get()
     destination_code = convert_iata_code(next((code for code, city in airports_japan.items() if city == destination_city), None))
 
-    check_in_date = datetime.strptime(departure_calendar.get_date(), '%y. %m. %d.').strftime('%Y-%m-%d')
-    check_out_date = datetime.strptime(return_calendar.get_date(), '%y. %m. %d.').strftime('%Y-%m-%d')
+    check_in_date = datetime.strptime(departure_calendar.get_date(), '%m/%d/%y').strftime('%Y-%m-%d')
+    check_out_date = datetime.strptime(return_calendar.get_date(), '%m/%d/%y').strftime('%Y-%m-%d')
+
 
     try:
         hotel_list_response = amadeus.reference_data.locations.hotels.by_city.get(cityCode=destination_code)
