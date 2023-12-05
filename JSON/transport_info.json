@@ -1,0 +1,146 @@
+{
+  "TYO": {
+    "PassName": ["JR Pass", "Tokyo Wide Pass"],
+    "Coverage": "JR lines in Tokyo and surrounding Kanto region",
+    "DurationOptions": ["1-day", "2-day", "3-day"],
+    "Notes": "Some services may require additional fees"
+  },
+  "OSA": {
+    "PassName": ["Kansai Thru Pass", "JR West Rail Pass"],
+    "Coverage": "Subways, private railways, and buses in Kansai region",
+    "DurationOptions": ["1-day", "2-day", "3-day", "4-day"],
+    "Notes": "Covers Osaka, Kyoto, Kobe, and Nara"
+  },
+  "FUK": {
+    "PassName": ["Northern Kyushu Pass", "All Kyushu Pass"],
+    "Coverage": "JR Kyushu trains in the northern part of Kyushu",
+    "DurationOptions": ["3-day", "5-day"],
+    "Notes": "Includes Fukuoka, Nagasaki, and Kumamoto"
+  },
+  "NGO": {
+    "PassName": ["JR Tokai Pass"],
+    "Coverage": "JR lines in the Chubu region",
+    "DurationOptions": ["1-day", "2-day", "3-day"],
+    "Notes": "Good for travel between Nagoya, Shizuoka, and surrounding areas"
+  },
+  "HIA": {
+    "PassName": ["JR West Hiroshima Area Pass"],
+    "Coverage": "Unlimited travel in Hiroshima and surrounding areas",
+    "DurationOptions": ["1-day", "2-day", "3-day", "4-day"],
+    "Notes": "Includes ferry to Miyajima Island"
+  },
+  "HSG": {
+    "PassName": ["Saga City Day Pass"],
+    "Coverage": "Bus and train services within Saga City",
+    "DurationOptions": ["1-day"],
+    "Notes": "Allows for easy access around the city"
+  },
+  "FSZ": {
+    "PassName": ["Suruga Bay Ferry Pass"],
+    "Coverage": "Ferry service across Suruga Bay",
+    "DurationOptions": ["Single trip"],
+    "Notes": "Offers a scenic route between Shizuoka and the Izu Peninsula"
+  },
+  "CTS": {
+    "PassName": ["Hokkaido Rail Pass"],
+    "Coverage": "JR Hokkaido trains",
+    "DurationOptions": ["3-day", "5-day", "7-day"],
+    "Notes": "Includes travel on the scenic Hokkaido Shinkansen"
+  },
+  "KKJ": {
+    "PassName": ["Kitakyushu City Pass"],
+    "Coverage": "Unlimited travel on Kitakyushu City monorail and buses",
+    "DurationOptions": ["1-day"],
+    "Notes": "Convenient for sightseeing in Kitakyushu"
+  },
+  "TAK": {
+    "PassName": ["Shikoku Rail Pass"],
+    "Coverage": "JR Shikoku trains",
+    "DurationOptions": ["2-day", "3-day", "4-day", "5-day"],
+    "Notes": "Covers travel across the Shikoku region"
+  },
+  "KMJ": {
+    "PassName": ["Kumamoto City Transportation Pass"],
+    "Coverage": "Buses and trams within Kumamoto City",
+    "DurationOptions": ["1-day"],
+    "Notes": "Ideal for visiting Kumamoto's main attractions"
+  },
+  "YGJ": {
+    "PassName": ["Yonago City Bus One-Day Pass"],
+    "Coverage": "Buses within Yonago City",
+    "DurationOptions": ["1-day"],
+    "Notes": "Simple way to explore Yonago"
+  },
+  "MYJ": {
+    "PassName": ["Iyo Railway Pass"],
+    "Coverage": "Unlimited travel on Iyo Railway services",
+    "DurationOptions": ["1-day", "2-day"],
+    "Notes": "Connects key locations in Matsuyama"
+  },
+  "OKA": {
+    "PassName": ["Okinawa Monorail Pass"],
+    "Coverage": "Okinawa monorail (Yui Rail)",
+    "DurationOptions": ["1-day", "2-day"],
+    "Notes": "Connects Naha Airport to Shuri Castle"
+  },
+  "SDJ": {
+    "PassName": ["Sendai Area Pass"],
+    "Coverage": "Unlimited travel on JR East trains in the Sendai area",
+    "DurationOptions": ["1-day", "2-day"],
+    "Notes": "Includes access to nearby scenic areas"
+  },
+  "NGS": {
+    "PassName": ["Nagasaki Electric Tramway Pass"],
+    "Coverage": "Unlimited rides on Nagasaki trams",
+    "DurationOptions": ["1-day"],
+    "Notes": "Ideal for sightseeing in Nagasaki"
+  },
+  "TOY": {
+    "PassName": ["Toyama Chiho Railway Pass"],
+    "Coverage": "Unlimited travel on Toyama Chiho Railway lines",
+    "DurationOptions": ["1-day", "2-day"],
+    "Notes": "Includes the scenic Tateyama Kurobe Alpine Route"
+  },
+  "KOJ": {
+    "PassName": ["Sunq Pass"],
+    "Coverage": "Unlimited bus rides in the Kagoshima region",
+    "DurationOptions": ["1-day", "2-day", "3-day"],
+    "Notes": "Great for exploring the Kagoshima prefecture"
+  },
+  "KMQ": {
+    "PassName": ["Hokuriku Arch Pass"],
+    "Coverage": "Unlimited travel on JR trains in the Hokuriku region",
+    "DurationOptions": ["7-day"],
+    "Notes": "Covers travel between Tokyo and Osaka via Hokuriku"
+  },
+  "KIJ": {
+    "PassName": ["JR East Pass (Niigata, Nagano area)"],
+    "Coverage": "JR lines in Niigata and Nagano",
+    "DurationOptions": ["5-day"],
+    "Notes": "Includes access to ski resorts and onsen towns"
+  },
+  "OIT": {
+    "PassName": ["Kyu-Nan Bus One-Day Pass"],
+    "Coverage": "Buses in the Oita region",
+    "DurationOptions": ["1-day"],
+    "Notes": "Ideal for visiting Beppu hot springs and other attractions"
+  },
+  "OKJ": {
+    "PassName": ["Okayama City Tram and Bus Pass"],
+    "Coverage": "Trams and buses within Okayama City",
+    "DurationOptions": ["1-day"],
+    "Notes": "Convenient for visiting Okayama Castle and Korakuen Garden"
+  },
+  "KMI": {
+    "PassName": ["Visit Miyazaki Bus Pass"],
+    "Coverage": "Unlimited rides on designated tourist buses",
+    "DurationOptions": ["1-day"],
+    "Notes": "Covers major sights in Miyazaki"
+  },
+  "HIJ": {
+    "PassName": ["Hiroshima Bus and Streetcar One-Day Pass"],
+    "Coverage": "Buses and streetcars in Hiroshima",
+    "DurationOptions": ["1-day"],
+    "Notes": "Ideal for visiting Hiroshima Peace Memorial Park"
+  }
+}

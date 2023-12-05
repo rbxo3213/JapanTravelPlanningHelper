@@ -1,0 +1,39 @@
+{
+    "Korea": {
+        "ICN": "Seoul(ICN)",
+        "GMP": "Seoul(GMP)",
+        "PUS": "Busan",
+        "CJU": "Jeju",
+        "MWX": "Muan",
+        "YNY": "Yangyang",
+        "CJJ": "Cheongju",
+        "TAE": "Daegu"
+    },
+    "Japan": {
+        "HND": "Tokyo(HND)",
+        "NRT": "Tokyo(NRT)",
+        "KIX": "Osaka(KIX)",
+        "ITM": "Osaka(ITM)",
+        "FUK": "Fukuoka",
+        "NGO": "Nagoya",
+        "HIJ": "Hiroshima",
+        "HSG": "Saga",
+        "FSZ": "Shizuoka",
+        "CTS": "Sapporo",
+        "KKJ": "Kitakyushu",
+        "TAK": "Takamatsu",
+        "KMJ": "Kumamoto",
+        "MYJ": "Matsuyama",
+        "OKA": "Okinawa",
+        "SDJ": "Sendai",
+        "NGS": "Nagasaki",
+        "TOY": "Toyama",
+        "KOJ": "Kagoshima",
+        "KMQ": "Komatsu",
+        "KIJ": "Niigata",
+        "OIT": "Oita",
+        "OKJ": "Okayama",
+        "KMI": "Miyazaki",
+        "YGJ": "Yonago"
+    }
+}
