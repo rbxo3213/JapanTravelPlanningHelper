@@ -89,6 +89,10 @@ python JTPH.py
 - The OpenAi API used to implement the "make plan" feature consumes pre-charged money for token use, which can lead to errors if the money is exhausted.
 - The Amadeus API used to implement real-time search for hotels and tickets is limited in use in Japan, so there may be cases where the search is not possible (especially hotels).
 
+## Reference
+- Amadeus API official reference document [AmadeusAPIofficial](https://developers.amadeus.com/self-service/apis-docs)
+- OpenAI API official reference document [OpenAIofficial](https://platform.openai.com/docs/api-reference)
+- ChatGPT
 ## Support
 
 Please open the issue in the repository for support or questions.
