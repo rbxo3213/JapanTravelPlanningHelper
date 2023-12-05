@@ -187,7 +187,9 @@ def search_flights():
     departure_date = datetime.strptime(departure_calendar.get_date(), '%m/%d/%y').strftime('%Y-%m-%d')
     return_date = datetime.strptime(return_calendar.get_date(), '%m/%d/%y').strftime('%Y-%m-%d')
 
-
+    if(departure_date > return_date):
+        messagebox.showerror("Error", "Departure date must be before return date")
+        return
 
     try:
         response = amadeus.shopping.flight_offers_search.get(
@@ -209,6 +211,8 @@ def fetch_hotel_list():
     check_in_date = datetime.strptime(departure_calendar.get_date(), '%m/%d/%y').strftime('%Y-%m-%d')
     check_out_date = datetime.strptime(return_calendar.get_date(), '%m/%d/%y').strftime('%Y-%m-%d')
 
+    if(check_in_date > check_out_date):
+        return
 
     try:
         hotel_list_response = amadeus.reference_data.locations.hotels.by_city.get(cityCode=destination_code)
@@ -340,6 +344,11 @@ def sort_hotels(hotels, region_name, hotels_scrollable_frame, hotels_canvas, hot
     hotels_canvas.configure(scrollregion=hotels_canvas.bbox("all"))
 
 def fetch_pois(destination_city):
+    departure_date = datetime.strptime(departure_calendar.get_date(), '%m/%d/%y').strftime('%Y-%m-%d')
+    return_date = datetime.strptime(return_calendar.get_date(), '%m/%d/%y').strftime('%Y-%m-%d')
+
+    if(departure_date > return_date):
+        return
     # Extract the IATA code from the city name (assuming the format "City(IATA)")
     destination_city = destination_var.get()
     iata_code = convert_iata_code(next((code for code, city in airports_japan.items() if city == destination_city), None))
@@ -389,6 +398,11 @@ def display_pois(pois_data, iata_code):
         poi_description_label.pack(side='top', fill='x', expand=True)
 
 def display_transport_info(destination_code):
+    departure_date = datetime.strptime(departure_calendar.get_date(), '%m/%d/%y').strftime('%Y-%m-%d')
+    return_date = datetime.strptime(return_calendar.get_date(), '%m/%d/%y').strftime('%Y-%m-%d')
+
+    if(departure_date > return_date):
+        return
     destination_city = destination_var.get()
     destination_code = convert_iata_code(next((code for code, city in airports_japan.items() if city == destination_city), None))
     iata_code = convert_iata_code(destination_code)

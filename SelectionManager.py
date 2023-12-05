@@ -137,5 +137,11 @@ class SelectionManager:
         }
         
     def confirm_and_generate_plan(self):
+        # Add verification logic
+        if not self.selected_flight or not self.selected_hotel or not self.selected_pois or not self.selected_pass_names or not self.selected_durations:
+            messagebox.showerror("Error", "Please select all options.")
+            return 
+        
         self.confirm_selections()
         self.generate_travel_plan()
+

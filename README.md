@@ -35,7 +35,9 @@ Replicate the repository and make sure Python 3.x is installed. Go to the projec
 pip install -r requirements.txt
 ```
 
-- **It's important** And please make and add your Amadeus API key, OpenAI API key json file named, "API_key.json", "gpt_api.json" in JSON folder 
+- **It's important** And please make and add your Amadeus API key, OpenAI API key json file named, "API_key.json", "gpt_api.json" in JSON folder
+
+- **The easiest way**: Just download the attached exe file and run it!
 
 1. **Start the program**:
 
@@ -49,7 +51,7 @@ python JTPH.py
 
    <img width="252" alt="스크린샷 2023-12-05 173157" src="https://github.com/rbxo3213/JapanTravelPlanningHelper/assets/42289726/4348e458-525b-4653-85a4-7d6048c66855">
 
-4. **Select tickets**: - List tickets available for booking by price. Select tickets.
+3. **Select tickets**: - List tickets available for booking by price. Select tickets.
 
 <img width="765" alt="스크린샷 2023-12-05 173314" src="https://github.com/rbxo3213/JapanTravelPlanningHelper/assets/42289726/7568e29e-f030-477e-88d1-7cca39feb958">
 
