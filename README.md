@@ -1,42 +1,33 @@
 
-# JTPH - Japan Travel Planning Helper
-
-JTPH is a comprehensive travel planning application specifically tailored for journeys within Japan. It streamlines the process of finding flights, accommodations, and points of interest, simplifying travel logistics and itinerary planning.
-
 ## Features
 
-- **Flight and Accommodation Search**: Intuitive interfaces for selecting flights and hotels, with real-time pricing and availability.
-- **Point of Interest Discovery**: Explore various attractions and sights across Japan to add to your itinerary.
-- **Transport Information**: Detailed transport data to help you navigate between locations efficiently.
-- **Selection Management**: Seamlessly manage your selections across different categories with the `SelectionManager.py` module.
-- **IATA Code Search**: The `iataSearcher.py` tool provides IATA codes for cities beyond Japan, such as Shizuoka or Paris, catering to developers who wish to extend the program's capabilities.
+- **Search for flights and accommodation**: Intuitive interface for choosing flights and hotels, showing real-time prices and availability loaded through Amadeus api.
+- **Find points of interest**: Add a itinerary with a tour of various attractions and attractions across Japan.
+- **Transport information**: Informs the coverage and duration option of the transport pass ticket available in the area.
+- **Search for IATA codes**: The 'iataSearcher.py ' tool is independent of the functionality of JTPH, but it is a program that outputs IATA codes when you enter city names around the world, and is suitable for developers who want to expand the functionality of the program by providing IATA codes for cities other than Japan, such as Berlin, New York, and Paris.
 
-## Installation & Setup
+## Installation & Settings
 
-Clone the repository and ensure you have Python 3.x installed. Navigate to the project directory and install any necessary dependencies.
+Replicate the repository and make sure Python 3.x is installed. Go to the project directory and install the required dependencies.
 
 ## Usage
 
-1. **Starting the Program**: Run `JTPH.py` to launch the application.
-2. **Choosing Flights & Hotels**: Use the GUI to select your preferred flights and accommodations.
-3. **Exploring Points of Interest**: Browse through the list of attractions and add them to your plan.
-4. **Reviewing Transport Options**: Check available transportation means for your travel dates and destinations.
-5. **Managing Selections**: The `SelectionManager.py` module will help you finalize your choices and suggest an itinerary using the OpenAI API.
-
-## Screenshots
-
-Below are examples of the JTPH interface in action:
-
-![Hotel Selection Interface](your-image-hosting-link-to-hotel-screenshot)
-![Flight Details Interface](your-image-hosting-link-to-flight-screenshot)
-![Main Search Interface](your-image-hosting-link-to-main-search-screenshot)
+1. **Start the program**: Run the application by running 'JTPH.py '.
+<img width="252" alt="스크린샷 2023-12-05 173157" src="https://github.com/rbxo3213/JapanTravelPlanningHelper/assets/42289726/4348e458-525b-4653-85a4-7d6048c66855">
+3. **Start screen**: Select the departure point, destination, departure date, return date, and number of people and press the search button. The return selection window shows the selected airline, hotel, pois, and transportation information.
+4. **Select tickets**: List tickets available for booking by price. Select tickets.
+5. **Hotel Selection**: List a list of hotels (name, price) available for booking. Once you have selected a location, the list of hotels will be sorted by the one you have selected. Please select a hotel.
+3. **Explore points of interest**: Scroll through the list of attractions in the area you're traveling to and add them to your plan.
+4. **Transport option review**: Select the available transport pass and duration of use in the area you are traveling to.
+5. **Manage options**: You can reset selected elements by pressing the reset button on the start screen. Press the close all window button to close all search windows.
+6. Once you've selected the air, hotel, attraction, and transportation you want, press the Make Plan button to get travel planning suggestions.
 
 ## Additional Notes
 
-The `iataSearcher.py` is an auxiliary tool for those interested in adding functionality for international travel.
+'iataSearcher.py ' is a reference and assistance tool for those interested in adding features for international travel using amadeus api.
 
-`SelectionManager.py` is crucial for interfacing with OpenAI's API to generate travel plans based on user selections.
+'SelectionManager.py ' is critical to OpenAI's interface with A OpenAI, which generates travel plans based on user selection.
 
 ## Support
 
-Please open an issue in the repository for support or questions.
+Please open the issue in the repository for support or questions.
