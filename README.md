@@ -93,6 +93,7 @@ python JTPH.py
 - Amadeus API official reference document [AmadeusAPIofficial](https://developers.amadeus.com/self-service/apis-docs)
 - OpenAI API official reference document [OpenAIofficial](https://platform.openai.com/docs/api-reference)
 - ChatGPT
+- Github Copilot
 ## Support
 
 Please open the issue in the repository for support or questions.
