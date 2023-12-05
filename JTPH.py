@@ -427,7 +427,6 @@ def display_transport_details(transport_info):
     transport_window.update_idletasks()
     transport_window.geometry(f"{transport_window.winfo_reqwidth()}x{transport_window.winfo_reqheight()}")
 
-# 모든 창을 닫는 함수
 def close_all_windows():
     for window in opened_windows:
         window.destroy()
